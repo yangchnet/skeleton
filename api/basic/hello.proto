@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package skeleton.basic.hello.v1;
+
+option go_package = "pb";
+
+import "google/protobuf/wrappers.proto";
+
+service HelloService {
+    rpc SayHello(SayHelloRequest) returns(SayHelloResponse){};
+}
+
+message SayHelloRequest {
+    // hello message
+    google.protobuf.StringValue message = 1;
+}
+
+message SayHelloResponse {
+    // hello echo
+    google.protobuf.StringValue echo_message = 1;
+}

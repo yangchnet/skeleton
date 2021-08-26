@@ -6,8 +6,11 @@ var Files = map[string]string{
 	"api.swagger.json": `{
   "swagger": "2.0",
   "info": {
-    "title": "hello.proto",
-    "version": "version not set"
+    "title": "Project Skeleton",
+    "version": "0.0.1",
+    "contact": {
+      "name": "Project Skeleton"
+    }
   },
   "schemes": [
     "http",
@@ -68,7 +71,20 @@ var Files = map[string]string{
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "description": "The Authorization header must be set to Bearer followed by a space and a token. For example, 'Bearer vHUabiBEIKi8n1RdvWOjGFulGSM6zunb'.",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
 }
 `,
 }

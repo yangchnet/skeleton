@@ -9,6 +9,7 @@
   
     - [HelloAggr](#skeleton.aggr.hello.v1.HelloAggr)
   
+- [security.proto](#security.proto)
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -64,6 +65,22 @@
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | SayHelloAggr | [SayHelloAggrRequest](#skeleton.aggr.hello.v1.SayHelloAggrRequest) | [SayHelloAggrResponse](#skeleton.aggr.hello.v1.SayHelloAggrResponse) |  |
+
+ 
+
+
+
+<a name="security.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## security.proto
+
+
+ 
+
+ 
+
+ 
 
  
 

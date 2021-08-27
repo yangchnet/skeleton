@@ -78,11 +78,18 @@ var Files = map[string]string{
       "description": "The Authorization header must be set to Bearer followed by a space and a token. For example, 'Bearer vHUabiBEIKi8n1RdvWOjGFulGSM6zunb'.",
       "name": "Authorization",
       "in": "header"
+    },
+    "PasetoAuth": {
+      "type": "apiKey",
+      "description": "PASETO is a security token format that uses protocol versioning instead of in-band negotiation to provide maximum security but still allow seamless migrations.",
+      "name": "Authorization",
+      "in": "header"
     }
   },
   "security": [
     {
-      "BearerAuth": []
+      "BearerAuth": [],
+      "PasetoAuth": []
     }
   ]
 }

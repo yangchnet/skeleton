@@ -29,11 +29,24 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 				name: "Authorization";
 			}
 		}
+        security: {
+            key: "PasetoAuth";
+            value: {
+                description: "PASETO is a security token format that uses protocol versioning instead of in-band negotiation to provide maximum security but still allow seamless migrations.";
+                type: TYPE_API_KEY;
+                in: IN_HEADER;
+                name: "Authorization";
+            }
+        }
 	}
 	security: {
 		security_requirement: {
 			key: "BearerAuth";
 			value: {};
 		}
+        security_requirement: {
+            key: "PasetoAuth";
+            value: {};
+        }
 	}
 };

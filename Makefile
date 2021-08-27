@@ -8,3 +8,8 @@ generate:
 api-gateway:
 	@cd cmd/api-gateway && \
 	go build -o debug-api-gateway main.go && ./debug-api-gateway
+
+sqlc:
+	@cd db && make sqlc
+
+

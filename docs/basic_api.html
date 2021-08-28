@@ -196,6 +196,29 @@
             </ul>
           </li>
         
+          
+          <li>
+            <a href="#iam.proto">iam.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#skeleton.basic.iam.v1.CreateUserRequest"><span class="badge">M</span>CreateUserRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#skeleton.basic.iam.v1.CreateUserResponse"><span class="badge">M</span>CreateUserResponse</a>
+                </li>
+              
+              
+              
+              
+                <li>
+                  <a href="#skeleton.basic.iam.v1.IamService"><span class="badge">S</span>IamService</a>
+                </li>
+              
+            </ul>
+          </li>
+        
         <li><a href="#scalar-value-types">Scalar Value Types</a></li>
       </ul>
     </div>
@@ -274,6 +297,108 @@
                 <td>SayHello</td>
                 <td><a href="#skeleton.basic.hello.v1.SayHelloRequest">SayHelloRequest</a></td>
                 <td><a href="#skeleton.basic.hello.v1.SayHelloResponse">SayHelloResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        
+    
+      
+      <div class="file-heading">
+        <h2 id="iam.proto">iam.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="skeleton.basic.iam.v1.CreateUserRequest">CreateUserRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>username</td>
+                  <td><a href="#google.protobuf.StringValue">google.protobuf.StringValue</a></td>
+                  <td></td>
+                  <td><p>用户名 </p></td>
+                </tr>
+              
+                <tr>
+                  <td>password</td>
+                  <td><a href="#google.protobuf.StringValue">google.protobuf.StringValue</a></td>
+                  <td></td>
+                  <td><p>密码 </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#google.protobuf.StringValue">google.protobuf.StringValue</a></td>
+                  <td></td>
+                  <td><p>邮箱 </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="skeleton.basic.iam.v1.CreateUserResponse">CreateUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>username</td>
+                  <td><a href="#google.protobuf.StringValue">google.protobuf.StringValue</a></td>
+                  <td></td>
+                  <td><p>用户名 </p></td>
+                </tr>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#google.protobuf.StringValue">google.protobuf.StringValue</a></td>
+                  <td></td>
+                  <td><p>用户编号 </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+        <h3 id="skeleton.basic.iam.v1.IamService">IamService</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>CreateUser</td>
+                <td><a href="#skeleton.basic.iam.v1.CreateUserRequest">CreateUserRequest</a></td>
+                <td><a href="#skeleton.basic.iam.v1.CreateUserResponse">CreateUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             

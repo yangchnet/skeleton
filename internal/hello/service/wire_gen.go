@@ -8,15 +8,15 @@ package service
 import (
 	"context"
 	"database/sql"
-	"github.com/yangchnet/skeleton/micro/iam/data"
+	"github.com/yangchnet/skeleton/internal/hello/data"
 )
 
 // Injectors from wire.go:
 
 func InitService(ctx context.Context, db *sql.DB) service {
-	store := data.NewStore(db)
+	helloInterface := data.NewStore(db)
 	serviceService := service{
-		iamData: store,
+		hello: helloInterface,
 	}
 	return serviceService
 }

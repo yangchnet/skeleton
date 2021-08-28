@@ -7,7 +7,7 @@ import (
 	"database/sql"
 
 	"github.com/google/wire"
-	"github.com/yangchnet/skeleton/micro/iam/data"
+	"github.com/yangchnet/skeleton/internal/iam/data"
 )
 
 func InitService(ctx context.Context, db *sql.DB) service {

@@ -15,7 +15,11 @@ type Store struct {
 	*Queries
 }
 
-func NewStore(db *sql.DB) *Store {
+type HelloInterface interface {
+	Querier
+}
+
+func NewStore(db *sql.DB) HelloInterface {
 	return &Store{
 		db:      db,
 		Queries: New(db),

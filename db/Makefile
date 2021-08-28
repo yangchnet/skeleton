@@ -13,7 +13,7 @@ sql-build:
 	docker build -t skeleton-mysql .
 
 sql-up:
-	docker run --name skeleton-sql -p 13306:3306 -v ~/.skeleton-data/mysql:/var/lib/mysql -d skeleton-mysql
+	docker run --name skeleton-sql --restart=always -p 13306:3306 -v ~/.skeleton-data/mysql:/var/lib/mysql -d skeleton-mysql 
 
 sql-down:
 	docker stop skeleton-sql && \

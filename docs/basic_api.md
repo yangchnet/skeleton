@@ -9,6 +9,12 @@
   
     - [HelloService](#skeleton.basic.hello.v1.HelloService)
   
+- [iam.proto](#iam.proto)
+    - [CreateUserRequest](#skeleton.basic.iam.v1.CreateUserRequest)
+    - [CreateUserResponse](#skeleton.basic.iam.v1.CreateUserResponse)
+  
+    - [IamService](#skeleton.basic.iam.v1.IamService)
+  
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -64,6 +70,65 @@
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | SayHello | [SayHelloRequest](#skeleton.basic.hello.v1.SayHelloRequest) | [SayHelloResponse](#skeleton.basic.hello.v1.SayHelloResponse) |  |
+
+ 
+
+
+
+<a name="iam.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## iam.proto
+
+
+
+<a name="skeleton.basic.iam.v1.CreateUserRequest"></a>
+
+### CreateUserRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| username | [google.protobuf.StringValue](#google.protobuf.StringValue) |  | 用户名 |
+| password | [google.protobuf.StringValue](#google.protobuf.StringValue) |  | 密码 |
+| email | [google.protobuf.StringValue](#google.protobuf.StringValue) |  | 邮箱 |
+
+
+
+
+
+
+<a name="skeleton.basic.iam.v1.CreateUserResponse"></a>
+
+### CreateUserResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| username | [google.protobuf.StringValue](#google.protobuf.StringValue) |  | 用户名 |
+| user_id | [google.protobuf.StringValue](#google.protobuf.StringValue) |  | 用户编号 |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="skeleton.basic.iam.v1.IamService"></a>
+
+### IamService
+
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| CreateUser | [CreateUserRequest](#skeleton.basic.iam.v1.CreateUserRequest) | [CreateUserResponse](#skeleton.basic.iam.v1.CreateUserResponse) |  |
 
  
 

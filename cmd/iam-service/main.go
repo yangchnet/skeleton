@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	iam "github.com/yangchnet/skeleton/micro/iam/server"
+	iam "github.com/yangchnet/skeleton/internal/iam/server"
 )
 
 func main() {

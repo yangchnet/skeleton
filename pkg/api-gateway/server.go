@@ -61,7 +61,6 @@ func (s *Server) log(ctx context.Context) gin.HandlerFunc {
 		default:
 			l.Info(ctx, logStr)
 		}
-
 	}
 }
 

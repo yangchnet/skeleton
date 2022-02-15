@@ -11,7 +11,7 @@ import (
 var ProviderSet = wire.NewSet(NewIamServiceClient)
 
 func NewIamServiceClient(ctx context.Context) (pb.IamServiceClient, error) {
-	client, err := localGrpc.NewClient("skeleton-iam-manage", 10001) //TODO: constants
+	client, err := localGrpc.NewClient("skeleton-iam-manage", 10001) // TODO: constants
 	if err != nil {
 		return nil, err
 	}

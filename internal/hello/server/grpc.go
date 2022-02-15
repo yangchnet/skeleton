@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// Serve start grpc server.
 func Serve(ctx context.Context) {
 	conn, err := sql.Open("mysql", "mysql://root:secret@tcp(localhost:13306)/hello")
 	if err != nil {

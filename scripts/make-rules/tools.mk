@@ -55,3 +55,7 @@ BUF_VERSION := 1.0.0-rc12
 .PHONY: install.buf
 install.buf: 
 	@$(ROOT_DIR)/scripts/buf-install.sh
+
+.PHONY: install.migrate
+install.migrate: 
+	@$(GO) install -tags '$(DB_TYPE)' github.com/golang-migrate/migrate/v4/cmd/migrate@latest

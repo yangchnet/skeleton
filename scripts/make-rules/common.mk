@@ -1,5 +1,25 @@
 SHELL := /bin/bash
 
+# project name
+ifeq ($(origin PROJECT_NAME),undefined)
+	PROJECT_NAME := skeleton
+endif
+
+# common password
+ifeq ($(origin PASSWORD),undefined)
+	PASSWORD := ?-12@
+endif
+
+# db type
+ifeq ($(origin DB_TYPE),undefined)
+	DB_TYPE := mysql
+endif
+
+ifeq ($(origin DB_PORT),undefined)
+	DB_PORT := 13306
+endif
+
+
 COMMON_SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 ifeq ($(origin ROOT_DIR),undefined)
@@ -77,9 +97,11 @@ endif
 # Missing CRITICAL_TOOLS can lead to some necessary operations failed. i.e. `make release` failed.
 # TRIVIAL_TOOLS are Optional tools, missing these tool have no affect.
 BLOCKER_TOOLS ?= goimports golangci-lint
-CRITICAL_TOOLS ?= mockgen protoc-gen-go protoc-gen-grpc-gateway protoc-gen-go-grpc protoc-gen-openapiv2 wire sqlc buf
+CRITICAL_TOOLS ?= mockgen protoc-gen-go protoc-gen-grpc-gateway \
+ protoc-gen-go-grpc protoc-gen-openapiv2 wire sqlc buf \
+ migrate
 TRIVIAL_TOOLS ?= 
 
 COMMA := ,
-SPACE := 
-SPACE += 
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY) 

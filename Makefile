@@ -16,7 +16,9 @@ include scripts/make-rules/common.mk
 include scripts/make-rules/tools.mk
 include scripts/make-rules/golang.mk
 include scripts/make-rules/gen.mk
-include scripts/make-rules/up.mk
+include scripts/make-rules/run.mk
+include scripts/make-rules/image.mk
+include scripts/make-rules/migrate.mk
 
 .PHONY: build
 build:
@@ -30,9 +32,9 @@ clean:
 tools:
 	@$(MAKE) tools.install
 
-.PHONY: up
-up:
-	@$(MAKE) up
+.PHONY: run
+run:
+	@$(MAKE) run
 
 sql-build:
 	@cd db && make sql-build

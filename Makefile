@@ -16,6 +16,7 @@ include scripts/make-rules/common.mk
 include scripts/make-rules/tools.mk
 include scripts/make-rules/golang.mk
 include scripts/make-rules/gen.mk
+include scripts/make-rules/up.mk
 
 .PHONY: build
 build:
@@ -29,9 +30,9 @@ clean:
 tools:
 	@$(MAKE) tools.install
 
-api-gateway:
-	@cd cmd/api-gateway && \
-	go build -o debug-api-gateway api-gateway.go && ./debug-api-gateway
+.PHONY: up
+up:
+	@$(MAKE) up
 
 sql-build:
 	@cd db && make sql-build

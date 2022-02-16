@@ -24,7 +24,19 @@ install.mockgen:
 
 .PHONY: install.protoc-gen-go
 install.protoc-gen-go:
-	@$(GO) install github.com/golang/protobuf/protoc-gen-go@latest
+	@$(GO) install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+.PHONY: install.protoc-gen-grpc-gateway
+install.protoc-gen-grpc-gateway:
+	@$(GO) install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+
+.PHONY: install.protoc-gen-openapiv2
+install.protoc-gen-openapiv2:
+	@$(GO) install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+
+.PHONY: install.protoc-gen-go-grpc
+install.protoc-gen-go-grpc:
+	@$(GO) install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 .PHONY: install.goimports
 install.goimports:
@@ -37,3 +49,9 @@ install.wire:
 .PHONY: install.sqlc
 install.sqlc:
 	@$(GO) install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+
+BUF_BIN := $(GOBIN)
+BUF_VERSION := 1.0.0-rc12
+.PHONY: install.buf
+install.buf: 
+	@$(ROOT_DIR)/scripts/buf-install.sh

@@ -1,10 +1,11 @@
 package service
 
 import (
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pbHello "github.com/yangchnet/skeleton/pkg/pb/hello/v1"
+	pbIam "github.com/yangchnet/skeleton/pkg/pb/iam/v1"
 )
 
 type service struct {
-	iamServiceClient   pb.IamServiceClient
-	helloServiceClient pb.HelloServiceClient
+	iamServiceClient   pbIam.IamServiceClient
+	helloServiceClient pbHello.HelloServiceClient
 }

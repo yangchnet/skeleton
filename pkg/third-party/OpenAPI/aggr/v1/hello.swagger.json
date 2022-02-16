@@ -1,0 +1,114 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "aggr/v1/hello.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "HelloAggr"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/app/evidences": {
+      "post": {
+        "summary": "打招呼",
+        "description": "create evidence",
+        "operationId": "HelloAggr_SayHelloAggr",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/aggrSayHelloAggrResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/aggrSayHelloAggrRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloAggr"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "aggrSayHelloAggrRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "title": "hello message"
+        }
+      }
+    },
+    "aggrSayHelloAggrResponse": {
+      "type": "object",
+      "properties": {
+        "echoMessage": {
+          "type": "string",
+          "title": "hello echo"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "description": "Authentication token, prefixed by Bearer: Bearer \u003ctoken\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

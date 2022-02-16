@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pb "github.com/yangchnet/skeleton/pkg/pb/hello/v1"
 )
 
 var _ pb.HelloServiceServer = (*service)(nil)

@@ -1,7 +1,7 @@
 version: "1"
 packages:
   - name: "data"
-    path: "../micro/iam/data"
+    path: "../internal/iam/data"
     queries: "./queries/iam/"
     schema: "./schema/iam/"
     engine: "mysql"
@@ -10,7 +10,7 @@ packages:
     emit_interface: true
     emit_exact_table_names: false
   - name: "data"
-    path: "../micro/hello/data"
+    path: "../internal/hello/data"
     queries: "./queries/hello/"
     schema: "./schema/hello"
     engine: "mysql"

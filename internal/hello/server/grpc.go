@@ -7,7 +7,7 @@ import (
 
 	"github.com/yangchnet/skeleton/internal/hello/service"
 	localGrpc "github.com/yangchnet/skeleton/pkg/grpc"
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pb "github.com/yangchnet/skeleton/pkg/pb/hello/v1"
 	"google.golang.org/grpc"
 )
 

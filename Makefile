@@ -15,6 +15,7 @@ VERSION_PACAKGE=github.com/yangchnet/component-base/pkg/version
 include scripts/make-rules/common.mk
 include scripts/make-rules/tools.mk
 include scripts/make-rules/golang.mk
+include scripts/make-rules/gen.mk
 
 .PHONY: build
 build:
@@ -28,23 +29,9 @@ clean:
 tools:
 	@$(MAKE) tools.install
 
-generate: 
-	@cd api && make
-	@echo proto compile succeed!
-	@cd pkg/api-gateway && make
-	@echo all succeed!!
-
 api-gateway:
 	@cd cmd/api-gateway && \
-	go build -o debug-api-gateway main.go && ./debug-api-gateway
-
-sqlc:
-	@cd db && make sqlc
-
-wire:
-	@cd ./internal/iam/service && wire
-	@cd ./internal/hello/service && wire
-	@cd ./internal/aggr/service && wire
+	go build -o debug-api-gateway api-gateway.go && ./debug-api-gateway
 
 sql-build:
 	@cd db && make sql-build

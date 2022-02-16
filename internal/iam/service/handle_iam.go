@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/yangchnet/skeleton/pkg/logger"
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pb "github.com/yangchnet/skeleton/pkg/pb/iam/v1"
 	"github.com/yangchnet/skeleton/pkg/utils/pbutil"
 )
 

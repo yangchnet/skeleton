@@ -1,0 +1,54 @@
+syntax = "proto3";
+package aggr;
+
+// set go package name to pb
+option go_package = "github.com/yangchnet/skeleton/pkg/pb";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+// import "security.proto";
+
+service HelloAggr {
+    rpc SayHelloAggr(SayHelloAggrRequest) returns(SayHelloAggrResponse){
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "打招呼"
+            description: "create evidence"
+            // security: {} // 加上这一行代表无需认证
+        };
+        option (google.api.http) = {
+            post: "/v1/app/evidences"
+            body: "*"
+        };
+    };
+}
+
+message SayHelloAggrRequest {
+    // hello message
+    google.protobuf.StringValue message = 1;
+}
+
+message SayHelloAggrResponse {
+    // hello echo
+    google.protobuf.StringValue echo_message = 1;
+}
+
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	security_definitions: {
+	  security: {
+		key: "bearer"
+		value: {
+		  type: TYPE_API_KEY
+		  in: IN_HEADER
+		  name: "Authorization"
+		  description: "Authentication token, prefixed by Bearer: Bearer <token>"
+		}
+	  }
+	}
+	security: {
+	  security_requirement: {
+		key: "bearer"
+	  }
+	}
+  };

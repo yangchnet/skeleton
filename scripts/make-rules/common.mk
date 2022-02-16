@@ -58,6 +58,16 @@ else
 	IMAGE_PLAT := $(PLATFORM)
 endif
 
+# Set GOPATH
+ifeq ($(origin GOPATH),undefined)
+	GOPATH := $(shell go env GOPATH)
+endif
+
+# Set GOBIN
+ifeq ($(origin GOBIN),undefined)
+	GOBIN := $(addprefix $(GOPATH),/bin)
+endif
+
 ifndef V
 MAKEFLAGS += --no-print-directory
 endif
@@ -67,7 +77,7 @@ endif
 # Missing CRITICAL_TOOLS can lead to some necessary operations failed. i.e. `make release` failed.
 # TRIVIAL_TOOLS are Optional tools, missing these tool have no affect.
 BLOCKER_TOOLS ?= goimports golangci-lint
-CRITICAL_TOOLS ?= mockgen protoc-gen-go wire sqlc
+CRITICAL_TOOLS ?= mockgen protoc-gen-go protoc-gen-grpc-gateway protoc-gen-go-grpc protoc-gen-openapiv2 wire sqlc buf
 TRIVIAL_TOOLS ?= 
 
 COMMA := ,

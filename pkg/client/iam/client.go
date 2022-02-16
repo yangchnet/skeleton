@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/wire"
 	localGrpc "github.com/yangchnet/skeleton/pkg/grpc"
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pb "github.com/yangchnet/skeleton/pkg/pb/iam/v1"
 )
 
 var ProviderSet = wire.NewSet(NewIamServiceClient)

@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yangchnet/skeleton/internal/iam/service"
 	localGrpc "github.com/yangchnet/skeleton/pkg/grpc"
-	pb "github.com/yangchnet/skeleton/pkg/pb/basic"
+	pb "github.com/yangchnet/skeleton/pkg/pb/iam/v1"
 	"google.golang.org/grpc"
 )
 

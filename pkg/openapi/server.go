@@ -31,7 +31,6 @@ func (s *Server) run(ctx context.Context) error {
 	r := gin.New()
 
 	r.Use(s.log(ctx), s.recover(ctx))
-
 	r.GET("/openapi-ui/*filepath", gin.WrapH(getOpenAPIHandler()))
 
 	return r.Run(":10000")

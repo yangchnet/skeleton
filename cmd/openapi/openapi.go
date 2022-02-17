@@ -7,5 +7,6 @@ import (
 )
 
 func main() {
-	openapi.Serve(context.Background())
+	ctx := context.Background()
+	openapi.Serve(ctx)
 }

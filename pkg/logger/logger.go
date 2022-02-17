@@ -16,18 +16,26 @@ import (
 type color string
 
 const (
-	reset color = "\033[0m"
-	// red         color = "\033[31m".
-	green color = "\033[32m"
-	// yellow      color = "\033[33m"
-	// blue        color = "\033[34m"
-	// magenta     color = "\033[35m".
-	cyan  color = "\033[36m"
-	white color = "\033[37m"
-	// blueBold    color = "\033[34;1m".
+	reset       color = "\033[0m"
+	red         color = "\033[31m"
+	green       color = "\033[32m"
+	yellow      color = "\033[33m"
+	blue        color = "\033[34m"
+	magenta     color = "\033[35m"
+	cyan        color = "\033[36m"
+	white       color = "\033[37m"
+	blueBold    color = "\033[34;1m"
 	magentaBold color = "\033[35;1m"
 	redBold     color = "\033[31;1m"
-	// yellowBold  color = "\033[33;1m".
+	yellowBold  color = "\033[33;1m"
+)
+
+const (
+	infoColor     = yellowBold
+	debugColor    = green
+	warnColor     = cyan
+	errorColor    = redBold
+	criticalColor = magentaBold
 )
 
 type LogLevel uint32
@@ -55,14 +63,6 @@ func (l LogLevel) String() string {
 	}
 	return "unknown"
 }
-
-const (
-	infoColor     = white
-	debugColor    = green
-	warnColor     = cyan
-	errorColor    = redBold
-	criticalColor = magentaBold
-)
 
 type Interface interface {
 	LogMode(LogLevel) Interface

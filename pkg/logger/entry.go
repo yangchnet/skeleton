@@ -1,4 +1,4 @@
-package newlogger
+package logger
 
 import (
 	"bytes"

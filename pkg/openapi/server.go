@@ -46,12 +46,11 @@ func getOpenAPIHandler() http.Handler {
 		panic("couldn't create sub filesystem: " + err.Error())
 	}
 
-	// return http.FileServer(http.FS(subFS))
 	return http.StripPrefix("/openapi-ui/", http.FileServer(http.FS(subFS)))
 }
 
 func (s *Server) log(ctx context.Context) gin.HandlerFunc {
-	l := logger.NewLogger()
+	l := logger.StdLogger()
 
 	return func(c *gin.Context) {
 		t := time.Now()
@@ -88,7 +87,7 @@ func (s *Server) recover(ctx context.Context) gin.HandlerFunc {
 		defer func() {
 			if r := recover(); r != nil {
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
-				logger.Critical(ctx, "Panic recovered: %+v\n%s", r, string(httpRequest))
+				logger.Error("Panic recovered: %+v\n%s", r, string(httpRequest))
 				c.JSON(500, gin.H{
 					"title": "error",
 					"err":   r,

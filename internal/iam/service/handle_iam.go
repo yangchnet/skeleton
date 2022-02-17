@@ -15,11 +15,10 @@ func (s *service) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*p
 	password := req.GetPassword().GetValue()
 	email := req.GetEmail().GetValue()
 
-	logger.Info(ctx, "username: %s, password: %s, email: %s", username, password, email)
-
-	logger.Warn(ctx, "username: %s, password: %s, email: %s", username, password, email)
-	logger.Debug(ctx, "username: %s, password: %s, email: %s", username, password, email)
-	logger.Error(ctx, "username: %s, password: %s, email: %s", username, password, email)
+	logger.Info("username: %s, password: %s, email: %s", username, password, email)
+	logger.Warn("username: %s, password: %s, email: %s", username, password, email)
+	logger.Debug("username: %s, password: %s, email: %s", username, password, email)
+	logger.Error("username: %s, password: %s, email: %s", username, password, email)
 
 	return &pb.CreateUserResponse{
 		Username: pbutil.ToProtoString("lichang"),

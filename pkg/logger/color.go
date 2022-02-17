@@ -1,4 +1,4 @@
-package newlogger
+package logger
 
 // Colors.
 type Color string

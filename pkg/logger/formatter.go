@@ -1,4 +1,4 @@
-package newlogger
+package logger
 
 type Formatter interface {
 	// Maybe in async goroutine

@@ -1,182 +1,160 @@
 package logger
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
-	"runtime"
-	"strings"
-	"sync/atomic"
-	"time"
+	"sync"
+	"unsafe"
 )
 
-// Colors
+var std = New()
 
-type color string
-
-const (
-	reset       color = "\033[0m"
-	red         color = "\033[31m"
-	green       color = "\033[32m"
-	yellow      color = "\033[33m"
-	blue        color = "\033[34m"
-	magenta     color = "\033[35m"
-	cyan        color = "\033[36m"
-	white       color = "\033[37m"
-	blueBold    color = "\033[34;1m"
-	magentaBold color = "\033[35;1m"
-	redBold     color = "\033[31;1m"
-	yellowBold  color = "\033[33;1m"
-)
-
-const (
-	infoColor     = yellowBold
-	debugColor    = green
-	warnColor     = cyan
-	errorColor    = redBold
-	criticalColor = magentaBold
-)
-
-type LogLevel uint32
-
-const (
-	InfoLevel LogLevel = iota
-	DebugLevel
-	WarnLevel
-	ErrorLevel
-	CriticalLevel
-)
-
-func (l LogLevel) String() string {
-	switch l {
-	case InfoLevel:
-		return "info"
-	case DebugLevel:
-		return "debug"
-	case WarnLevel:
-		return "warn"
-	case ErrorLevel:
-		return "error"
-	case CriticalLevel:
-		return "critical"
-	}
-	return "unknown"
+type logger struct {
+	opt       *options
+	mu        sync.Mutex
+	entryPool *sync.Pool
 }
 
-type Interface interface {
-	LogMode(LogLevel) Interface
-	Info(context.Context, string, ...interface{})
-	Debug(context.Context, string, ...interface{})
-	Warn(context.Context, string, ...interface{})
-	Error(context.Context, string, ...interface{})
-	Critical(context.Context, string, ...interface{})
+// New crate a logger object.
+func New(opts ...Option) *logger {
+	logger := &logger{opt: initOptions(opts...)}
+	logger.entryPool = &sync.Pool{New: func() interface{} { return entry(logger) }}
+
+	return logger
 }
 
-type Logger struct {
-	Level  LogLevel
-	output io.Writer
-	depth  int
+func StdLogger() *logger {
+	return std
 }
 
-func (logger *Logger) level() LogLevel {
-	return LogLevel(atomic.LoadUint32((*uint32)(&logger.Level)))
+func SetOptions(opts ...Option) {
+	std.SetOptions(opts...)
 }
 
-func (logger *Logger) SetLevel(level LogLevel) {
-	atomic.StoreUint32((*uint32)(&logger.Level), uint32(level))
-}
+func (l *logger) SetOptions(opts ...Option) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 
-func (level LogLevel) Color() color {
-	switch level {
-	case InfoLevel:
-		return infoColor
-	case DebugLevel:
-		return debugColor
-	case WarnLevel:
-		return warnColor
-	case ErrorLevel:
-		return errorColor
-	case CriticalLevel:
-		return criticalColor
-	}
-
-	return white
-}
-
-func (logger *Logger) formatOutput(ctx context.Context, level LogLevel, output string) string {
-	now := time.Now().Format("2006-01-02 15:04:05")
-
-	_, file, line, ok := runtime.Caller(logger.depth)
-	if !ok {
-		file = "???"
-		line = 0
-	}
-	// short file name
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			file = file[i+1:]
-			break
-		}
-	}
-	return fmt.Sprintf("%-25s -%s- %s (%s:%d)",
-		now, strings.ToUpper(level.String()), output, file, line)
-}
-
-func NewLogger() *Logger {
-	return &Logger{
-		Level:  CriticalLevel,
-		output: os.Stdout,
-		depth:  3,
+	for _, opt := range opts {
+		opt(l.opt)
 	}
 }
 
-func (logger *Logger) logf(ctx context.Context, level LogLevel, format string, args ...interface{}) {
-	if logger.Level < level {
-		return
-	}
-
-	fmt.Fprintf(logger.output, "%s %s\n %s", level.Color(), logger.formatOutput(ctx, level, fmt.Sprintf(format, args...)), reset)
+func Writer() io.Writer {
+	return std
 }
 
-func (logger *Logger) Info(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, InfoLevel, format, args...)
+func (l *logger) Write(data []byte) (int, error) {
+	l.entry().write(l.opt.stdLevel, FmtEmptySeparate, *(*string)(unsafe.Pointer(&data)))
+	return 0, nil
 }
 
-func (logger *Logger) Warn(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, WarnLevel, format, args...)
+func (l *logger) entry() *Entry {
+	return l.entryPool.Get().(*Entry)
 }
 
-func (logger *Logger) Error(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, ErrorLevel, format, args...)
+func (l *logger) Debug(args ...interface{}) {
+	l.entry().write(DebugLevel, FmtEmptySeparate, args...)
 }
 
-func (logger *Logger) Debug(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, DebugLevel, format, args...)
+func (l *logger) Info(args ...interface{}) {
+	l.entry().write(InfoLevel, FmtEmptySeparate, args...)
 }
 
-func (logger *Logger) Critical(ctx context.Context, format string, args ...interface{}) {
-	logger.logf(ctx, CriticalLevel, format, args...)
+func (l *logger) Warn(args ...interface{}) {
+	l.entry().write(WarnLevel, FmtEmptySeparate, args...)
 }
 
-var logger = NewLogger()
-
-func Info(ctx context.Context, format string, args ...interface{}) {
-	logger.Info(ctx, format, args...)
+func (l *logger) Error(args ...interface{}) {
+	l.entry().write(ErrorLevel, FmtEmptySeparate, args...)
 }
 
-func Debug(ctx context.Context, format string, args ...interface{}) {
-	logger.Debug(ctx, format, args...)
+func (l *logger) Panic(args ...interface{}) {
+	l.entry().write(PanicLevel, FmtEmptySeparate, args...)
+	panic(fmt.Sprint(args...))
 }
 
-func Warn(ctx context.Context, format string, args ...interface{}) {
-	logger.Warn(ctx, format, args...)
+func (l *logger) Fatal(args ...interface{}) {
+	l.entry().write(FatalLevel, FmtEmptySeparate, args...)
+	os.Exit(1)
 }
 
-func Error(ctx context.Context, format string, args ...interface{}) {
-	logger.Error(ctx, format, args...)
+func (l *logger) Debugf(format string, args ...interface{}) {
+	l.entry().write(DebugLevel, format, args...)
 }
 
-func Critical(ctx context.Context, format string, args ...interface{}) {
-	logger.Critical(ctx, format, args...)
+func (l *logger) Infof(format string, args ...interface{}) {
+	l.entry().write(InfoLevel, format, args...)
+}
+
+func (l *logger) Warnf(format string, args ...interface{}) {
+	l.entry().write(WarnLevel, format, args...)
+}
+
+func (l *logger) Errorf(format string, args ...interface{}) {
+	l.entry().write(ErrorLevel, format, args...)
+}
+
+func (l *logger) Panicf(format string, args ...interface{}) {
+	l.entry().write(PanicLevel, format, args...)
+	panic(fmt.Sprintf(format, args...))
+}
+
+func (l *logger) Fatalf(format string, args ...interface{}) {
+	l.entry().write(FatalLevel, format, args...)
+	os.Exit(1)
+}
+
+// std logger.
+func Debug(args ...interface{}) {
+	std.entry().write(DebugLevel, FmtEmptySeparate, args...)
+}
+
+func Info(args ...interface{}) {
+	std.entry().write(InfoLevel, FmtEmptySeparate, args...)
+}
+
+func Warn(args ...interface{}) {
+	std.entry().write(WarnLevel, FmtEmptySeparate, args...)
+}
+
+func Error(args ...interface{}) {
+	std.entry().write(ErrorLevel, FmtEmptySeparate, args...)
+}
+
+func Panic(args ...interface{}) {
+	std.entry().write(PanicLevel, FmtEmptySeparate, args...)
+	panic(fmt.Sprint(args...))
+}
+
+func Fatal(args ...interface{}) {
+	std.entry().write(FatalLevel, FmtEmptySeparate, args...)
+	os.Exit(1)
+}
+
+func Debugf(format string, args ...interface{}) {
+	std.entry().write(DebugLevel, format, args...)
+}
+
+func Infof(format string, args ...interface{}) {
+	std.entry().write(InfoLevel, format, args...)
+}
+
+func Warnf(format string, args ...interface{}) {
+	std.entry().write(WarnLevel, format, args...)
+}
+
+func Errorf(format string, args ...interface{}) {
+	std.entry().write(ErrorLevel, format, args...)
+}
+
+func Panicf(format string, args ...interface{}) {
+	std.entry().write(PanicLevel, format, args...)
+	panic(fmt.Sprintf(format, args...))
+}
+
+func Fatalf(format string, args ...interface{}) {
+	std.entry().write(FatalLevel, format, args...)
+	os.Exit(1)
 }

@@ -1,4 +1,4 @@
-APPS ?= openapi
+APPS ?= openapi iam-service
 
 .PHONY: run
 run: $(addprefix run.,$(APPS))

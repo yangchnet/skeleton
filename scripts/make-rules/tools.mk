@@ -46,6 +46,7 @@ install.goimports:
 install.wire:
 	@$(GO) install github.com/google/wire/cmd/wire@latest
 
+# deprecated
 .PHONY: install.sqlc
 install.sqlc:
 	@$(GO) install github.com/kyleconroy/sqlc/cmd/sqlc@latest
@@ -56,6 +57,11 @@ BUF_VERSION := 1.0.0-rc12
 install.buf: 
 	@$(ROOT_DIR)/scripts/buf-install.sh
 
+# deprecated
 .PHONY: install.migrate
 install.migrate: 
 	@$(GO) install -tags '$(DB_TYPE)' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+.PHONY: install.ent
+install.ent:
+	@$(GO) install entgo.io/ent/cmd/ent

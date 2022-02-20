@@ -98,8 +98,8 @@ endif
 # TRIVIAL_TOOLS are Optional tools, missing these tool have no affect.
 BLOCKER_TOOLS ?= goimports golangci-lint
 CRITICAL_TOOLS ?= mockgen protoc-gen-go protoc-gen-grpc-gateway \
- protoc-gen-go-grpc protoc-gen-openapiv2 wire sqlc buf \
- migrate
+ protoc-gen-go-grpc protoc-gen-openapiv2 wire buf \
+ ent 
 TRIVIAL_TOOLS ?= 
 
 COMMA := ,

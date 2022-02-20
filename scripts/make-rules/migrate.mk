@@ -1,3 +1,5 @@
+# deprecated
+
 MIGRATE := migrate
 
 DB_NAMES := $(notdir $(wildcard $(ROOT_DIR)/db/schema/*))

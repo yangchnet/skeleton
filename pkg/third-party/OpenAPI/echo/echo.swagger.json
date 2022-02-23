@@ -1,0 +1,272 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "echo/echo.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "EchoService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/echo": {
+      "post": {
+        "summary": "create echo",
+        "description": "post any message to server and get echo",
+        "operationId": "EchoService_CreateEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateEchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateEchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ],
+        "security": []
+      }
+    },
+    "/api/v1/echo/{id}": {
+      "delete": {
+        "summary": "delete echo",
+        "description": "delete echo record",
+        "operationId": "EchoService_DeleteEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteEchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "delete record id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "[^/]+"
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ]
+      },
+      "put": {
+        "summary": "update echo ",
+        "description": "get echo list from server",
+        "operationId": "EchoService_UpdateEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateEchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "echo record id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "[^/]+"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "newEcho": {
+                  "type": "string",
+                  "title": "new echo message"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/api/v1/echos": {
+      "get": {
+        "summary": "list echo",
+        "description": "get echo list from server",
+        "operationId": "EchoService_ListEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListEchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ],
+        "security": []
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateEchoRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "title": "echo request message"
+        }
+      }
+    },
+    "v1CreateEchoResponse": {
+      "type": "object",
+      "properties": {
+        "echo": {
+          "type": "string",
+          "title": "echo response message"
+        }
+      }
+    },
+    "v1DeleteEchoResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/v1OperationResult",
+          "title": "delete result"
+        }
+      }
+    },
+    "v1EchoRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "echo record id"
+        },
+        "message": {
+          "type": "string",
+          "title": "echo request message"
+        },
+        "echo": {
+          "type": "string",
+          "title": "echo response message"
+        },
+        "echoTime": {
+          "type": "string",
+          "format": "date-time",
+          "title": "echo request time"
+        }
+      }
+    },
+    "v1ListEchoResponse": {
+      "type": "object",
+      "properties": {
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1EchoRecord"
+          },
+          "title": "echo record list"
+        },
+        "listLength": {
+          "type": "integer",
+          "format": "int32",
+          "title": "list length"
+        }
+      }
+    },
+    "v1OperationResult": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAIL"
+      ],
+      "default": "SUCCESS"
+    },
+    "v1UpdateEchoResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/v1OperationResult",
+          "title": "update result"
+        }
+      }
+    }
+  }
+}

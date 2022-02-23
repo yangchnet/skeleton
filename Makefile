@@ -19,6 +19,7 @@ include scripts/make-rules/gen.mk
 include scripts/make-rules/run.mk
 include scripts/make-rules/image.mk
 include scripts/make-rules/migrate.mk
+include scripts/make-rules/ent.mk
 
 .PHONY: build
 build:

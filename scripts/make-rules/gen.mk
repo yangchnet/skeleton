@@ -1,7 +1,5 @@
 GEN_LIST ?= wire sqlc proto
 
-ENT = ent
-
 .PHONY: gen.run
 gen.run: $(addprefix gen., $(GEN_LIST))
 
@@ -18,19 +16,21 @@ gen.sqlc: tools.verify.sqlc
 	@echo "==========> Generating golang query statement from sql"
 	@sqlc generate -f $(SQLC_CONFIG_FILE)
 
+PROTO_GENS := api conf
 .PHONY: gen.proto
-gen.proto: $(addprefix tools.verify., $(PROTO_TOOLS))
-	@echo "==========> Generating pb.go from protobuf file"
+gen.proto: $(addprefix gen.proto., $(PROTO_GENS))
+
+.PHONY: gen.proto.api
+gen.proto.api: $(addprefix tools.verify., $(PROTO_TOOLS))
+	@echo "==========> Generating pb.go for api"
 	@cd api && buf generate
+
+.PHONY: gen.proto.conf
+gen.proto.conf: tools.verify.protoc-gen-go
+	@echo "==========> Generating pb.go for conf"
+	@cd internal && buf generate
 
 .PHONY: gen.proto.update
 gen.proto.update: $(addprefix tools.verify., $(PROTO_TOOLS))
 	@cd api && buf mod update
-
-.PHONY: gen.ent.%
-gen.ent.%: tools.verify.ent
-	@$(ENT) init $*
-
-.PHONY: gen.ent.migrate
-gen.ent.migrate: tools.verify.ent
-	@$(GO) generate $(ROOT_DIR)/ent
+	@cd internal && buf mod update

@@ -1,0 +1,11 @@
+server:
+  http:
+    addr: 0.0.0.0:10000
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:10001
+    timeout: 1s
+data:
+  database:
+    driver: mysql
+    dsn: root:?@-12@tcp(127.0.0.1:13306)/ent?parseTime=true&charset=utf8mb4&loc=Local

@@ -12,14 +12,15 @@ message Bootstrap {
 
 message Server {
   message HTTP {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration timeout = 3;
+    string host = 2;
+    int64 port = 3;
+    google.protobuf.Duration timeout = 4;
   }
   message GRPC {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration timeout = 3;
+    string service_name = 1;
+    string host = 3;
+    int64 port = 4;
+    google.protobuf.Duration timeout = 5;
   }
   HTTP http = 1;
   GRPC grpc = 2;

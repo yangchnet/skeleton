@@ -1,9 +1,12 @@
 server:
   http:
-    addr: 0.0.0.0:10000
+    host: 0.0.0.0
+    port: 10000
     timeout: 1s
   grpc:
-    addr: 0.0.0.0:10001
+    service_name: echo_service
+    host: 0.0.0.0
+    port: 10001
     timeout: 1s
 data:
   database:

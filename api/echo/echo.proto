@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package ping.v1;
+
+option go_package = "github.com/yangchnet/skeleton/api/ping/v1;v1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "common/security.proto";
+
+service EchoService {
+  rpc CreateEcho(CreateEchoRequest) returns (CreateEchoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "create echo"
+      description : "post any message to server and get echo"
+      security : {} // 加上这一行代表无需认证
+    };
+    option (google.api.http) = {
+      post : "/api/v1/echo"
+      body : "*"
+    };
+  }
+  rpc ListEcho(ListEchoRequest) returns (ListEchoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "list echo"
+      description : "get echo list from server"
+      security : {} // 加上这一行代表无需认证
+    };
+    option (google.api.http) = {
+      get : "/api/v1/echos"
+    };
+  }
+  rpc UpdateEcho(UpdateEchoRequest) returns (UpdateEchoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "update echo "
+      description : "get echo list from server"
+    };
+    option (google.api.http) = {
+      put : "/api/v1/echo/{id=*}"
+      body : "*"
+    };
+  }
+  rpc DeleteEcho(DeleteEchoRequest) returns (DeleteEchoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "delete echo"
+      description : "delete echo record"
+    };
+    option (google.api.http) = {
+      delete : "/api/v1/echo/{id=*}"
+    };
+  }
+}
+
+message CreateEchoRequest {
+  // echo request message
+  google.protobuf.StringValue message = 1;
+}
+
+message CreateEchoResponse {
+  // echo response message
+  google.protobuf.StringValue echo = 1;
+}
+
+message ListEchoRequest {}
+
+message ListEchoResponse {
+  // echo record list
+  repeated EchoRecord records = 1;
+  // list length
+  int32 listLength = 2;
+}
+
+message UpdateEchoRequest {
+  // echo record id
+  google.protobuf.StringValue id = 1;
+  // new echo message
+  google.protobuf.StringValue new_echo = 2;
+}
+
+message UpdateEchoResponse {
+  // update result
+  OperationResult result = 1;
+}
+
+message DeleteEchoRequest {
+  // delete record id
+  google.protobuf.StringValue id = 1;
+}
+
+message DeleteEchoResponse {
+  // delete result
+  OperationResult result = 1;
+}
+
+message EchoRecord {
+  // echo record id
+  google.protobuf.StringValue id = 1;
+  // echo request message
+  google.protobuf.StringValue message = 2;
+  // echo response message
+  google.protobuf.StringValue echo = 3;
+  // echo request time
+  google.protobuf.Timestamp echo_time = 4;
+}
+
+enum OperationResult {
+  SUCCESS = 0;
+  FAIL = 1;
+}

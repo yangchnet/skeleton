@@ -28,7 +28,7 @@ message Server {
 message Data {
   message Database {
     string driver = 1;
-    string dsb = 2;
+    string dsn = 2;
   }
   Database database = 1;
 }

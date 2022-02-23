@@ -6,14 +6,19 @@ import (
 	"github.com/yangchnet/skeleton/internal/echo/biz"
 )
 
+// ProviderSet provided NewEchoService.
 var ProviderSet = wire.NewSet(NewEchoService)
 
+// EchoService implements grpc/http server.
 type EchoService struct {
 	v1.UnimplementedEchoServiceServer
 
 	uc *biz.EchoCase
 }
 
+// NewEchoService creates a new EchoService.
 func NewEchoService(uc *biz.EchoCase) *EchoService {
-	panic("not implemented") // TODO not implemented
+	return &EchoService{
+		uc: uc,
+	}
 }

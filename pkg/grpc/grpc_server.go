@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
 	"github.com/yangchnet/skeleton/pkg/logger"
 	"google.golang.org/grpc"
 )
@@ -35,6 +37,16 @@ func (g *GrpcServer) Serve(ctx context.Context, callback RegisterCallBack) {
 		logger.Panicf("Error listening on endpoint %v", err)
 	}
 
+	g.Opts = append(g.Opts,
+		grpc.ChainStreamInterceptor(
+			tags.StreamServerInterceptor(),
+			recovery.StreamServerInterceptor(),
+		), grpc.ChainUnaryInterceptor(
+			tags.UnaryServerInterceptor(),
+			recovery.UnaryServerInterceptor(),
+		),
+	)
+
 	grpcServer := grpc.NewServer(g.Opts...)
 	callback(grpcServer)
 
@@ -42,5 +54,3 @@ func (g *GrpcServer) Serve(ctx context.Context, callback RegisterCallBack) {
 		logger.Panicf("Error serving: %v", err)
 	}
 }
-
-// TODO: recover middleware

@@ -29,6 +29,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2 // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect

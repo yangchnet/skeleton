@@ -36,20 +36,3 @@ tools:
 .PHONY: run
 run:
 	@$(MAKE) run
-
-sql-build:
-	@cd db && make sql-build
-
-sql-migrate-up:
-	@cd db && make migrate-up
-
-sql-migrate-down:
-	@cd db && make migrate-down
-
-sql-up:
-	@cd db && make sql-up
-
-sql-down:
-	@cd db && make sql-down
-
-

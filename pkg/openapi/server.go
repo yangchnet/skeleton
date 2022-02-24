@@ -15,7 +15,9 @@ import (
 	third_party "github.com/yangchnet/skeleton/pkg/third-party"
 )
 
-type Server struct{}
+type Server struct {
+	// service grpc server
+}
 
 func Serve(ctx context.Context) {
 	s, _ := InitService(ctx)

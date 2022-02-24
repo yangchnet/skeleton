@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 
-	openapi "github.com/yangchnet/skeleton/pkg/openapi"
+	apigateway "github.com/yangchnet/skeleton/pkg/api-gateway"
 )
 
 func main() {
 	ctx := context.Background()
-	openapi.Serve(ctx)
+	apigateway.Serve(ctx)
 }

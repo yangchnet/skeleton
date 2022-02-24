@@ -12,7 +12,7 @@ import (
 )
 
 // Serve start echo service.
-func Serve(ctx context.Context, c *conf.Bootstrap) {
+func GrpcServe(ctx context.Context, c *conf.Bootstrap) {
 	service, err := service.InitService(ctx, c)
 	if err != nil {
 		logger.Panicf("error initializing service: %v", err)
@@ -26,3 +26,5 @@ func Serve(ctx context.Context, c *conf.Bootstrap) {
 		v1.RegisterEchoServiceServer(server, service)
 	})
 }
+
+// TODO: middleware recover and etc.

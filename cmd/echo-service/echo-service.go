@@ -18,7 +18,7 @@ func main() {
 
 	bc := loadConfig(*confLoc)
 
-	server.Serve(context.Background(), bc)
+	server.GrpcServe(context.Background(), bc)
 }
 
 func loadConfig(confLoc string) *conf.Bootstrap {

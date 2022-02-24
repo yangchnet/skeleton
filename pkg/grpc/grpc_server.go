@@ -42,3 +42,5 @@ func (g *GrpcServer) Serve(ctx context.Context, callback RegisterCallBack) {
 		logger.Panicf("Error serving: %v", err)
 	}
 }
+
+// TODO: recover middleware

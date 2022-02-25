@@ -15,6 +15,8 @@ const (
 	FieldMessage = "message"
 	// FieldEchoMessage holds the string denoting the echo_message field in the database.
 	FieldEchoMessage = "echo_message"
+	// FieldDeleted holds the string denoting the deleted field in the database.
+	FieldDeleted = "deleted"
 	// FieldCreateTime holds the string denoting the create_time field in the database.
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
@@ -30,6 +32,7 @@ var Columns = []string{
 	FieldID,
 	FieldMessage,
 	FieldEchoMessage,
+	FieldDeleted,
 	FieldCreateTime,
 	FieldUpdateTime,
 	FieldDeleteTime,
@@ -48,6 +51,8 @@ func ValidColumn(column string) bool {
 var (
 	// MessageValidator is a validator for the "message" field. It is called by the builders before save.
 	MessageValidator func(string) error
+	// DefaultDeleted holds the default value on creation for the "deleted" field.
+	DefaultDeleted bool
 	// DefaultCreateTime holds the default value on creation for the "create_time" field.
 	DefaultCreateTime func() time.Time
 )

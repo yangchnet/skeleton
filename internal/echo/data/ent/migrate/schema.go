@@ -13,6 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "message", Type: field.TypeString},
 		{Name: "echo_message", Type: field.TypeString},
+		{Name: "deleted", Type: field.TypeBool, Default: false},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime, Nullable: true},
 		{Name: "delete_time", Type: field.TypeTime, Nullable: true},

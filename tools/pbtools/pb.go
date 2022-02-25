@@ -39,6 +39,10 @@ func ToProtoInt32(i int32) *wrappers.Int32Value {
 	return &wrappers.Int32Value{Value: i}
 }
 
+func ToProtoInt64(i int64) *wrappers.Int64Value {
+	return &wrappers.Int64Value{Value: i}
+}
+
 func ToProtoBool(bool bool) *wrappers.BoolValue {
 	return &wrappers.BoolValue{Value: bool}
 }

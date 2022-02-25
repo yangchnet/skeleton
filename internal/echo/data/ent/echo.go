@@ -20,6 +20,8 @@ type Echo struct {
 	Message string `json:"message,omitempty"`
 	// EchoMessage holds the value of the "echo_message" field.
 	EchoMessage string `json:"echo_message,omitempty"`
+	// Deleted holds the value of the "deleted" field.
+	Deleted bool `json:"deleted,omitempty"`
 	// CreateTime holds the value of the "create_time" field.
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
@@ -33,6 +35,8 @@ func (*Echo) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case echo.FieldDeleted:
+			values[i] = new(sql.NullBool)
 		case echo.FieldID:
 			values[i] = new(sql.NullInt64)
 		case echo.FieldMessage, echo.FieldEchoMessage:
@@ -71,6 +75,12 @@ func (e *Echo) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field echo_message", values[i])
 			} else if value.Valid {
 				e.EchoMessage = value.String
+			}
+		case echo.FieldDeleted:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted", values[i])
+			} else if value.Valid {
+				e.Deleted = value.Bool
 			}
 		case echo.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -124,6 +134,8 @@ func (e *Echo) String() string {
 	builder.WriteString(e.Message)
 	builder.WriteString(", echo_message=")
 	builder.WriteString(e.EchoMessage)
+	builder.WriteString(", deleted=")
+	builder.WriteString(fmt.Sprintf("%v", e.Deleted))
 	builder.WriteString(", create_time=")
 	builder.WriteString(e.CreateTime.Format(time.ANSIC))
 	if v := e.UpdateTime; v != nil {

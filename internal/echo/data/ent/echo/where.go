@@ -106,6 +106,13 @@ func EchoMessage(v string) predicate.Echo {
 	})
 }
 
+// Deleted applies equality check predicate on the "deleted" field. It's identical to DeletedEQ.
+func Deleted(v bool) predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDeleted), v))
+	})
+}
+
 // CreateTime applies equality check predicate on the "create_time" field. It's identical to CreateTimeEQ.
 func CreateTime(v time.Time) predicate.Echo {
 	return predicate.Echo(func(s *sql.Selector) {
@@ -346,6 +353,20 @@ func EchoMessageEqualFold(v string) predicate.Echo {
 func EchoMessageContainsFold(v string) predicate.Echo {
 	return predicate.Echo(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldEchoMessage), v))
+	})
+}
+
+// DeletedEQ applies the EQ predicate on the "deleted" field.
+func DeletedEQ(v bool) predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDeleted), v))
+	})
+}
+
+// DeletedNEQ applies the NEQ predicate on the "deleted" field.
+func DeletedNEQ(v bool) predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDeleted), v))
 	})
 }
 

@@ -32,6 +32,20 @@ func (ec *EchoCreate) SetEchoMessage(s string) *EchoCreate {
 	return ec
 }
 
+// SetDeleted sets the "deleted" field.
+func (ec *EchoCreate) SetDeleted(b bool) *EchoCreate {
+	ec.mutation.SetDeleted(b)
+	return ec
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (ec *EchoCreate) SetNillableDeleted(b *bool) *EchoCreate {
+	if b != nil {
+		ec.SetDeleted(*b)
+	}
+	return ec
+}
+
 // SetCreateTime sets the "create_time" field.
 func (ec *EchoCreate) SetCreateTime(t time.Time) *EchoCreate {
 	ec.mutation.SetCreateTime(t)
@@ -145,6 +159,10 @@ func (ec *EchoCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ec *EchoCreate) defaults() {
+	if _, ok := ec.mutation.Deleted(); !ok {
+		v := echo.DefaultDeleted
+		ec.mutation.SetDeleted(v)
+	}
 	if _, ok := ec.mutation.CreateTime(); !ok {
 		v := echo.DefaultCreateTime()
 		ec.mutation.SetCreateTime(v)
@@ -163,6 +181,9 @@ func (ec *EchoCreate) check() error {
 	}
 	if _, ok := ec.mutation.EchoMessage(); !ok {
 		return &ValidationError{Name: "echo_message", err: errors.New(`ent: missing required field "Echo.echo_message"`)}
+	}
+	if _, ok := ec.mutation.Deleted(); !ok {
+		return &ValidationError{Name: "deleted", err: errors.New(`ent: missing required field "Echo.deleted"`)}
 	}
 	if _, ok := ec.mutation.CreateTime(); !ok {
 		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Echo.create_time"`)}
@@ -209,6 +230,14 @@ func (ec *EchoCreate) createSpec() (*Echo, *sqlgraph.CreateSpec) {
 			Column: echo.FieldEchoMessage,
 		})
 		_node.EchoMessage = value
+	}
+	if value, ok := ec.mutation.Deleted(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: echo.FieldDeleted,
+		})
+		_node.Deleted = value
 	}
 	if value, ok := ec.mutation.CreateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

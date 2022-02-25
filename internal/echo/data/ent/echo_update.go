@@ -40,6 +40,20 @@ func (eu *EchoUpdate) SetEchoMessage(s string) *EchoUpdate {
 	return eu
 }
 
+// SetDeleted sets the "deleted" field.
+func (eu *EchoUpdate) SetDeleted(b bool) *EchoUpdate {
+	eu.mutation.SetDeleted(b)
+	return eu
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (eu *EchoUpdate) SetNillableDeleted(b *bool) *EchoUpdate {
+	if b != nil {
+		eu.SetDeleted(*b)
+	}
+	return eu
+}
+
 // SetCreateTime sets the "create_time" field.
 func (eu *EchoUpdate) SetCreateTime(t time.Time) *EchoUpdate {
 	eu.mutation.SetCreateTime(t)
@@ -201,6 +215,13 @@ func (eu *EchoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: echo.FieldEchoMessage,
 		})
 	}
+	if value, ok := eu.mutation.Deleted(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: echo.FieldDeleted,
+		})
+	}
 	if value, ok := eu.mutation.CreateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -262,6 +283,20 @@ func (euo *EchoUpdateOne) SetMessage(s string) *EchoUpdateOne {
 // SetEchoMessage sets the "echo_message" field.
 func (euo *EchoUpdateOne) SetEchoMessage(s string) *EchoUpdateOne {
 	euo.mutation.SetEchoMessage(s)
+	return euo
+}
+
+// SetDeleted sets the "deleted" field.
+func (euo *EchoUpdateOne) SetDeleted(b bool) *EchoUpdateOne {
+	euo.mutation.SetDeleted(b)
+	return euo
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (euo *EchoUpdateOne) SetNillableDeleted(b *bool) *EchoUpdateOne {
+	if b != nil {
+		euo.SetDeleted(*b)
+	}
 	return euo
 }
 
@@ -448,6 +483,13 @@ func (euo *EchoUpdateOne) sqlSave(ctx context.Context) (_node *Echo, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: echo.FieldEchoMessage,
+		})
+	}
+	if value, ok := euo.mutation.Deleted(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: echo.FieldDeleted,
 		})
 	}
 	if value, ok := euo.mutation.CreateTime(); ok {

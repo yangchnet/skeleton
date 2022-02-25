@@ -35,6 +35,7 @@ type EchoMutation struct {
 	id            *int
 	message       *string
 	echo_message  *string
+	deleted       *bool
 	create_time   *time.Time
 	update_time   *time.Time
 	delete_time   *time.Time
@@ -214,6 +215,42 @@ func (m *EchoMutation) ResetEchoMessage() {
 	m.echo_message = nil
 }
 
+// SetDeleted sets the "deleted" field.
+func (m *EchoMutation) SetDeleted(b bool) {
+	m.deleted = &b
+}
+
+// Deleted returns the value of the "deleted" field in the mutation.
+func (m *EchoMutation) Deleted() (r bool, exists bool) {
+	v := m.deleted
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeleted returns the old "deleted" field's value of the Echo entity.
+// If the Echo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EchoMutation) OldDeleted(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeleted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeleted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeleted: %w", err)
+	}
+	return oldValue.Deleted, nil
+}
+
+// ResetDeleted resets all changes to the "deleted" field.
+func (m *EchoMutation) ResetDeleted() {
+	m.deleted = nil
+}
+
 // SetCreateTime sets the "create_time" field.
 func (m *EchoMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
@@ -367,12 +404,15 @@ func (m *EchoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EchoMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.message != nil {
 		fields = append(fields, echo.FieldMessage)
 	}
 	if m.echo_message != nil {
 		fields = append(fields, echo.FieldEchoMessage)
+	}
+	if m.deleted != nil {
+		fields = append(fields, echo.FieldDeleted)
 	}
 	if m.create_time != nil {
 		fields = append(fields, echo.FieldCreateTime)
@@ -395,6 +435,8 @@ func (m *EchoMutation) Field(name string) (ent.Value, bool) {
 		return m.Message()
 	case echo.FieldEchoMessage:
 		return m.EchoMessage()
+	case echo.FieldDeleted:
+		return m.Deleted()
 	case echo.FieldCreateTime:
 		return m.CreateTime()
 	case echo.FieldUpdateTime:
@@ -414,6 +456,8 @@ func (m *EchoMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldMessage(ctx)
 	case echo.FieldEchoMessage:
 		return m.OldEchoMessage(ctx)
+	case echo.FieldDeleted:
+		return m.OldDeleted(ctx)
 	case echo.FieldCreateTime:
 		return m.OldCreateTime(ctx)
 	case echo.FieldUpdateTime:
@@ -442,6 +486,13 @@ func (m *EchoMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEchoMessage(v)
+		return nil
+	case echo.FieldDeleted:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeleted(v)
 		return nil
 	case echo.FieldCreateTime:
 		v, ok := value.(time.Time)
@@ -533,6 +584,9 @@ func (m *EchoMutation) ResetField(name string) error {
 		return nil
 	case echo.FieldEchoMessage:
 		m.ResetEchoMessage()
+		return nil
+	case echo.FieldDeleted:
+		m.ResetDeleted()
 		return nil
 	case echo.FieldCreateTime:
 		m.ResetCreateTime()

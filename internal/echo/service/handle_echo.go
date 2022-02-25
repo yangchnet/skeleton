@@ -80,5 +80,5 @@ func (s *EchoService) DeleteEcho(ctx context.Context, req *v1.DeleteEchoRequest)
 }
 
 func (s *EchoService) mustEmbedUnimplementedEchoServiceServer() {
-	panic("not implemented") // TODO: Implement
+	panic("not implemented") // Implement
 }

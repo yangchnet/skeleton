@@ -27,7 +27,7 @@ type registerWrapper struct {
 var registers []registerWrapper = []registerWrapper{
 	{
 		f:        echov1.RegisterEchoServiceHandlerFromEndpoint,
-		endpoint: "", // FIXME
+		endpoint: "127.0.0.1:10001", // FIXME
 	},
 }
 

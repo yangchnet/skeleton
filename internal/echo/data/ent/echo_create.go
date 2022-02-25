@@ -52,9 +52,25 @@ func (ec *EchoCreate) SetUpdateTime(t time.Time) *EchoCreate {
 	return ec
 }
 
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (ec *EchoCreate) SetNillableUpdateTime(t *time.Time) *EchoCreate {
+	if t != nil {
+		ec.SetUpdateTime(*t)
+	}
+	return ec
+}
+
 // SetDeleteTime sets the "delete_time" field.
 func (ec *EchoCreate) SetDeleteTime(t time.Time) *EchoCreate {
 	ec.mutation.SetDeleteTime(t)
+	return ec
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (ec *EchoCreate) SetNillableDeleteTime(t *time.Time) *EchoCreate {
+	if t != nil {
+		ec.SetDeleteTime(*t)
+	}
 	return ec
 }
 
@@ -151,12 +167,6 @@ func (ec *EchoCreate) check() error {
 	if _, ok := ec.mutation.CreateTime(); !ok {
 		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Echo.create_time"`)}
 	}
-	if _, ok := ec.mutation.UpdateTime(); !ok {
-		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Echo.update_time"`)}
-	}
-	if _, ok := ec.mutation.DeleteTime(); !ok {
-		return &ValidationError{Name: "delete_time", err: errors.New(`ent: missing required field "Echo.delete_time"`)}
-	}
 	return nil
 }
 
@@ -214,7 +224,7 @@ func (ec *EchoCreate) createSpec() (*Echo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: echo.FieldUpdateTime,
 		})
-		_node.UpdateTime = value
+		_node.UpdateTime = &value
 	}
 	if value, ok := ec.mutation.DeleteTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -222,7 +232,7 @@ func (ec *EchoCreate) createSpec() (*Echo, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: echo.FieldDeleteTime,
 		})
-		_node.DeleteTime = value
+		_node.DeleteTime = &value
 	}
 	return _node, _spec
 }

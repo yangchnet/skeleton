@@ -11,4 +11,6 @@ server:
 data:
   database:
     driver: mysql
-    dsn: root:?@-12@tcp(127.0.0.1:13306)/ent?parseTime=true&charset=utf8mb4&loc=Local
+    dsn: root:insecure@tcp(127.0.0.1:13306)/echo?parseTime=true&charset=utf8mb4&loc=Local
+# TODO: logger settings
+# options and debug

@@ -60,9 +60,37 @@ func (eu *EchoUpdate) SetUpdateTime(t time.Time) *EchoUpdate {
 	return eu
 }
 
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (eu *EchoUpdate) SetNillableUpdateTime(t *time.Time) *EchoUpdate {
+	if t != nil {
+		eu.SetUpdateTime(*t)
+	}
+	return eu
+}
+
+// ClearUpdateTime clears the value of the "update_time" field.
+func (eu *EchoUpdate) ClearUpdateTime() *EchoUpdate {
+	eu.mutation.ClearUpdateTime()
+	return eu
+}
+
 // SetDeleteTime sets the "delete_time" field.
 func (eu *EchoUpdate) SetDeleteTime(t time.Time) *EchoUpdate {
 	eu.mutation.SetDeleteTime(t)
+	return eu
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (eu *EchoUpdate) SetNillableDeleteTime(t *time.Time) *EchoUpdate {
+	if t != nil {
+		eu.SetDeleteTime(*t)
+	}
+	return eu
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (eu *EchoUpdate) ClearDeleteTime() *EchoUpdate {
+	eu.mutation.ClearDeleteTime()
 	return eu
 }
 
@@ -187,10 +215,22 @@ func (eu *EchoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: echo.FieldUpdateTime,
 		})
 	}
+	if eu.mutation.UpdateTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: echo.FieldUpdateTime,
+		})
+	}
 	if value, ok := eu.mutation.DeleteTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
+			Column: echo.FieldDeleteTime,
+		})
+	}
+	if eu.mutation.DeleteTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
 			Column: echo.FieldDeleteTime,
 		})
 	}
@@ -245,9 +285,37 @@ func (euo *EchoUpdateOne) SetUpdateTime(t time.Time) *EchoUpdateOne {
 	return euo
 }
 
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (euo *EchoUpdateOne) SetNillableUpdateTime(t *time.Time) *EchoUpdateOne {
+	if t != nil {
+		euo.SetUpdateTime(*t)
+	}
+	return euo
+}
+
+// ClearUpdateTime clears the value of the "update_time" field.
+func (euo *EchoUpdateOne) ClearUpdateTime() *EchoUpdateOne {
+	euo.mutation.ClearUpdateTime()
+	return euo
+}
+
 // SetDeleteTime sets the "delete_time" field.
 func (euo *EchoUpdateOne) SetDeleteTime(t time.Time) *EchoUpdateOne {
 	euo.mutation.SetDeleteTime(t)
+	return euo
+}
+
+// SetNillableDeleteTime sets the "delete_time" field if the given value is not nil.
+func (euo *EchoUpdateOne) SetNillableDeleteTime(t *time.Time) *EchoUpdateOne {
+	if t != nil {
+		euo.SetDeleteTime(*t)
+	}
+	return euo
+}
+
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (euo *EchoUpdateOne) ClearDeleteTime() *EchoUpdateOne {
+	euo.mutation.ClearDeleteTime()
 	return euo
 }
 
@@ -396,10 +464,22 @@ func (euo *EchoUpdateOne) sqlSave(ctx context.Context) (_node *Echo, err error) 
 			Column: echo.FieldUpdateTime,
 		})
 	}
+	if euo.mutation.UpdateTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: echo.FieldUpdateTime,
+		})
+	}
 	if value, ok := euo.mutation.DeleteTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
+			Column: echo.FieldDeleteTime,
+		})
+	}
+	if euo.mutation.DeleteTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
 			Column: echo.FieldDeleteTime,
 		})
 	}

@@ -45,12 +45,19 @@ var LevelNameMapping = map[Level]string{
 
 // log options.
 type options struct {
-	output        io.Writer
-	level         Level
-	stdLevel      Level
-	formatter     Formatter
+	output    io.Writer
+	level     Level
+	stdLevel  Level
+	formatter Formatter
+
+	// if true, will not print call for log
 	disableCaller bool
-	disableColor  bool
+	// if true, will print log without color
+	disableColor bool
+	// if true, will print the absolute path about the file which print the log, default false
+	enableLongFile bool
+	// if true will print the func which do log, default false
+	enableFunc bool
 }
 
 type Option func(*options)
@@ -111,5 +118,17 @@ func WithDisableCaller(disableCaller bool) Option {
 func WithDisableColor(disableColor bool) Option {
 	return func(o *options) {
 		o.disableColor = disableColor
+	}
+}
+
+func WithEnableLongFile(enableLongFile bool) Option {
+	return func(o *options) {
+		o.enableLongFile = enableLongFile
+	}
+}
+
+func WithEnableFunc(enableFunc bool) Option {
+	return func(o *options) {
+		o.enableFunc = enableFunc
 	}
 }

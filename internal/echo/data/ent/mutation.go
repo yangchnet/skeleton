@@ -267,7 +267,7 @@ func (m *EchoMutation) UpdateTime() (r time.Time, exists bool) {
 // OldUpdateTime returns the old "update_time" field's value of the Echo entity.
 // If the Echo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EchoMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+func (m *EchoMutation) OldUpdateTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
 	}
@@ -281,9 +281,22 @@ func (m *EchoMutation) OldUpdateTime(ctx context.Context) (v time.Time, err erro
 	return oldValue.UpdateTime, nil
 }
 
+// ClearUpdateTime clears the value of the "update_time" field.
+func (m *EchoMutation) ClearUpdateTime() {
+	m.update_time = nil
+	m.clearedFields[echo.FieldUpdateTime] = struct{}{}
+}
+
+// UpdateTimeCleared returns if the "update_time" field was cleared in this mutation.
+func (m *EchoMutation) UpdateTimeCleared() bool {
+	_, ok := m.clearedFields[echo.FieldUpdateTime]
+	return ok
+}
+
 // ResetUpdateTime resets all changes to the "update_time" field.
 func (m *EchoMutation) ResetUpdateTime() {
 	m.update_time = nil
+	delete(m.clearedFields, echo.FieldUpdateTime)
 }
 
 // SetDeleteTime sets the "delete_time" field.
@@ -303,7 +316,7 @@ func (m *EchoMutation) DeleteTime() (r time.Time, exists bool) {
 // OldDeleteTime returns the old "delete_time" field's value of the Echo entity.
 // If the Echo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EchoMutation) OldDeleteTime(ctx context.Context) (v time.Time, err error) {
+func (m *EchoMutation) OldDeleteTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeleteTime is only allowed on UpdateOne operations")
 	}
@@ -317,9 +330,22 @@ func (m *EchoMutation) OldDeleteTime(ctx context.Context) (v time.Time, err erro
 	return oldValue.DeleteTime, nil
 }
 
+// ClearDeleteTime clears the value of the "delete_time" field.
+func (m *EchoMutation) ClearDeleteTime() {
+	m.delete_time = nil
+	m.clearedFields[echo.FieldDeleteTime] = struct{}{}
+}
+
+// DeleteTimeCleared returns if the "delete_time" field was cleared in this mutation.
+func (m *EchoMutation) DeleteTimeCleared() bool {
+	_, ok := m.clearedFields[echo.FieldDeleteTime]
+	return ok
+}
+
 // ResetDeleteTime resets all changes to the "delete_time" field.
 func (m *EchoMutation) ResetDeleteTime() {
 	m.delete_time = nil
+	delete(m.clearedFields, echo.FieldDeleteTime)
 }
 
 // Where appends a list predicates to the EchoMutation builder.
@@ -467,7 +493,14 @@ func (m *EchoMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *EchoMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(echo.FieldUpdateTime) {
+		fields = append(fields, echo.FieldUpdateTime)
+	}
+	if m.FieldCleared(echo.FieldDeleteTime) {
+		fields = append(fields, echo.FieldDeleteTime)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -480,6 +513,14 @@ func (m *EchoMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *EchoMutation) ClearField(name string) error {
+	switch name {
+	case echo.FieldUpdateTime:
+		m.ClearUpdateTime()
+		return nil
+	case echo.FieldDeleteTime:
+		m.ClearDeleteTime()
+		return nil
+	}
 	return fmt.Errorf("unknown Echo nullable field %s", name)
 }
 

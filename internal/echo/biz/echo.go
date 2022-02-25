@@ -4,7 +4,7 @@ import "context"
 
 // Echo is a domain object that handle an echo.
 type Echo struct {
-	ID          int64
+	ID          int
 	Message     string
 	EchoMessage string
 }
@@ -25,4 +25,11 @@ type EchoCase struct {
 // NewEchoCase creates a new EchoCase.
 func NewEchoCase(repo EchoRepo) *EchoCase {
 	return &EchoCase{repo: repo}
+}
+
+func (uc *EchoCase) CreateEcho(ctx context.Context, message string) (*Echo, error) {
+	return uc.repo.CreateEcho(ctx, &Echo{
+		Message:     message,
+		EchoMessage: message,
+	})
 }

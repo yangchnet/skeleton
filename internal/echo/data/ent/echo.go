@@ -23,9 +23,9 @@ type Echo struct {
 	// CreateTime holds the value of the "create_time" field.
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
-	UpdateTime time.Time `json:"update_time,omitempty"`
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// DeleteTime holds the value of the "delete_time" field.
-	DeleteTime time.Time `json:"delete_time,omitempty"`
+	DeleteTime *time.Time `json:"delete_time,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -82,13 +82,15 @@ func (e *Echo) assignValues(columns []string, values []interface{}) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
-				e.UpdateTime = value.Time
+				e.UpdateTime = new(time.Time)
+				*e.UpdateTime = value.Time
 			}
 		case echo.FieldDeleteTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field delete_time", values[i])
 			} else if value.Valid {
-				e.DeleteTime = value.Time
+				e.DeleteTime = new(time.Time)
+				*e.DeleteTime = value.Time
 			}
 		}
 	}
@@ -124,10 +126,14 @@ func (e *Echo) String() string {
 	builder.WriteString(e.EchoMessage)
 	builder.WriteString(", create_time=")
 	builder.WriteString(e.CreateTime.Format(time.ANSIC))
-	builder.WriteString(", update_time=")
-	builder.WriteString(e.UpdateTime.Format(time.ANSIC))
-	builder.WriteString(", delete_time=")
-	builder.WriteString(e.DeleteTime.Format(time.ANSIC))
+	if v := e.UpdateTime; v != nil {
+		builder.WriteString(", update_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	if v := e.DeleteTime; v != nil {
+		builder.WriteString(", delete_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

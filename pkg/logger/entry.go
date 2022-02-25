@@ -38,7 +38,7 @@ func (e *Entry) write(level Level, format string, args ...interface{}) {
 	e.Format = format
 	e.Args = args
 	if !e.logger.opt.disableCaller {
-		if pc, file, line, ok := runtime.Caller(2); ok {
+		if pc, file, line, ok := runtime.Caller(2); !ok {
 			e.File = "???"
 			e.Func = "???"
 		} else {

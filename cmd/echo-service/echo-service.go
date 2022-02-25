@@ -26,6 +26,7 @@ func loadConfig(confLoc string) *conf.Bootstrap {
 		config.WithSource(
 			file.NewSource(confLoc),
 		),
+		config.WithLogger(logger.StdLogger()),
 	)
 	defer c.Close()
 

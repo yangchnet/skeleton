@@ -8,7 +8,7 @@ import (
 	"unsafe"
 )
 
-var std = New()
+var std = New(WithEnableLongFile(true))
 
 type logger struct {
 	opt       *options

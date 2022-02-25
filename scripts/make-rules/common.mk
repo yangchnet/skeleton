@@ -7,7 +7,7 @@ endif
 
 # common password
 ifeq ($(origin PASSWORD),undefined)
-	PASSWORD := ?@-12
+	PASSWORD := insecure
 endif
 
 # db type

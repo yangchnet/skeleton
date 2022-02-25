@@ -14,8 +14,8 @@ var (
 		{Name: "message", Type: field.TypeString},
 		{Name: "echo_message", Type: field.TypeString},
 		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime},
-		{Name: "delete_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime, Nullable: true},
+		{Name: "delete_time", Type: field.TypeTime, Nullable: true},
 	}
 	// EchosTable holds the schema information for the "echos" table.
 	EchosTable = &schema.Table{

@@ -20,8 +20,8 @@ func (Echo) Fields() []ent.Field {
 		field.Time("create_time").Default(func() time.Time {
 			return time.Now()
 		}),
-		field.Time("update_time"),
-		field.Time("delete_time"),
+		field.Time("update_time").Nillable().Optional(),
+		field.Time("delete_time").Nillable().Optional(),
 	}
 }
 

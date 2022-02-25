@@ -501,6 +501,20 @@ func UpdateTimeLTE(v time.Time) predicate.Echo {
 	})
 }
 
+// UpdateTimeIsNil applies the IsNil predicate on the "update_time" field.
+func UpdateTimeIsNil() predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldUpdateTime)))
+	})
+}
+
+// UpdateTimeNotNil applies the NotNil predicate on the "update_time" field.
+func UpdateTimeNotNil() predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldUpdateTime)))
+	})
+}
+
 // DeleteTimeEQ applies the EQ predicate on the "delete_time" field.
 func DeleteTimeEQ(v time.Time) predicate.Echo {
 	return predicate.Echo(func(s *sql.Selector) {
@@ -574,6 +588,20 @@ func DeleteTimeLT(v time.Time) predicate.Echo {
 func DeleteTimeLTE(v time.Time) predicate.Echo {
 	return predicate.Echo(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldDeleteTime), v))
+	})
+}
+
+// DeleteTimeIsNil applies the IsNil predicate on the "delete_time" field.
+func DeleteTimeIsNil() predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDeleteTime)))
+	})
+}
+
+// DeleteTimeNotNil applies the NotNil predicate on the "delete_time" field.
+func DeleteTimeNotNil() predicate.Echo {
+	return predicate.Echo(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDeleteTime)))
 	})
 }
 

@@ -55,7 +55,7 @@ type options struct {
 	// if true, will print log without color
 	disableColor bool
 	// if true, will print the absolute path about the file which print the log, default false
-	enableLongFile bool
+	enableAbsPath bool
 	// if true will print the func which do log, default false
 	enableFunc bool
 }
@@ -121,9 +121,9 @@ func WithDisableColor(disableColor bool) Option {
 	}
 }
 
-func WithEnableLongFile(enableLongFile bool) Option {
+func WithEnableAbsPath(enableAbsPath bool) Option {
 	return func(o *options) {
-		o.enableLongFile = enableLongFile
+		o.enableAbsPath = enableAbsPath
 	}
 }
 

@@ -22,7 +22,7 @@ func (f *TextFormatter) Format(e *Entry) error {
 	if !f.IgnoreBasicFields {
 		e.Buffer.WriteString(fmt.Sprintf("%s %s", e.Time.Format(time.RFC3339), LevelNameMapping[e.Level]))
 		if e.File != "" {
-			if !e.logger.opt.enableLongFile {
+			if !e.logger.opt.enableAbsPath {
 				short := e.File
 				for i := len(e.File) - 1; i > 0; i-- {
 					if e.File[i] == '/' {

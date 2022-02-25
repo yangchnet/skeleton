@@ -12,5 +12,12 @@ data:
   database:
     driver: mysql
     dsn: root:insecure@tcp(127.0.0.1:13306)/echo?parseTime=true&charset=utf8mb4&loc=Local
-# TODO: logger settings
-# options and debug
+  # TODO: redis
+log:
+  level: 0 # 0: debug, 1: info, 2: warn, 3: error, 4: panic, 5, fatal
+  formatter: text # text/json
+  disable_caller: false # log中不记录文件名及行号
+  disable_color: false # 无颜色输出log
+  enable_abs_path: true # 输出文件名的完整的路径
+  enable_func: false # 输出打印log的函数名
+  ignore_basic_fields: false # 日志中不记录时间、文件等信息

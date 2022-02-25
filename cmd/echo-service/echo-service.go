@@ -18,6 +18,8 @@ func main() {
 
 	bc := loadConfig(*confLoc)
 
+	setLogger(bc)
+
 	server.GrpcServe(context.Background(), bc)
 }
 
@@ -40,4 +42,26 @@ func loadConfig(confLoc string) *conf.Bootstrap {
 	}
 
 	return &bc
+}
+
+func setLogger(c *conf.Bootstrap) {
+	var formatter logger.Formatter
+	switch c.Log.Formatter {
+	case "text":
+		formatter = &logger.TextFormatter{
+			c.Log.IgnoreBasicFields,
+		}
+	case "json":
+		formatter = &logger.JsonFormatter{
+			c.Log.IgnoreBasicFields,
+		}
+	}
+	logger.SetOptions(
+		logger.WithLevel(logger.Level(c.Log.Level)),
+		logger.WithFormatter(formatter),
+		logger.WithDisableCaller(c.Log.DisableCaller),
+		logger.WithDisableColor(c.Log.DisableColor),
+		logger.WithEnableAbsPath(c.Log.EnableAbsPath),
+		logger.WithEnableFunc(c.Log.EnableFunc),
+	)
 }

@@ -51,6 +51,15 @@ service EchoService {
       delete : "/api/v1/echo/{id=*}"
     };
   }
+  rpc GetEcho(GetEchoRequest) returns (EchoRecord) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "get echo"
+      description : "get echo record by id"
+    };
+    option (google.api.http) = {
+      get : "/api/v1/echo/{id=*}"
+    };
+  }
 }
 
 message CreateEchoRequest {
@@ -107,6 +116,8 @@ message EchoRecord {
   // echo request time
   google.protobuf.Timestamp echo_time = 4;
 }
+
+message GetEchoRequest { int64 id = 1; }
 
 enum OperationResult {
   SUCCESS = 0;

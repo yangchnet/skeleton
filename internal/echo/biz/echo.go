@@ -69,3 +69,7 @@ func (uc *EchoCase) DeleteEcho(ctx context.Context, id int64) error {
 
 	return nil
 }
+
+func (uc *EchoCase) GetEcho(ctx context.Context, id int64) (*Echo, error) {
+	return uc.repo.GetEcho(ctx, id)
+}

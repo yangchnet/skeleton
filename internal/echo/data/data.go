@@ -19,8 +19,6 @@ import (
 // ProviderSet provided NewData and NewEnt.
 var ProviderSet = wire.NewSet(NewEnt, NewData, NewCache)
 
-var serviceName = "echo_service"
-
 // NewEnt create an ent client.
 func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
 	drv, err := entsql.Open(c.Data.Database.Driver, c.Data.Database.Dsn)

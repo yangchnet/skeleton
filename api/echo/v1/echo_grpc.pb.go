@@ -26,6 +26,7 @@ type EchoServiceClient interface {
 	ListEcho(ctx context.Context, in *ListEchoRequest, opts ...grpc.CallOption) (*ListEchoResponse, error)
 	UpdateEcho(ctx context.Context, in *UpdateEchoRequest, opts ...grpc.CallOption) (*UpdateEchoResponse, error)
 	DeleteEcho(ctx context.Context, in *DeleteEchoRequest, opts ...grpc.CallOption) (*DeleteEchoResponse, error)
+	GetEcho(ctx context.Context, in *GetEchoRequest, opts ...grpc.CallOption) (*EchoRecord, error)
 }
 
 type echoServiceClient struct {
@@ -72,6 +73,15 @@ func (c *echoServiceClient) DeleteEcho(ctx context.Context, in *DeleteEchoReques
 	return out, nil
 }
 
+func (c *echoServiceClient) GetEcho(ctx context.Context, in *GetEchoRequest, opts ...grpc.CallOption) (*EchoRecord, error) {
+	out := new(EchoRecord)
+	err := c.cc.Invoke(ctx, "/echo.v1.EchoService/GetEcho", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 // All implementations must embed UnimplementedEchoServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type EchoServiceServer interface {
 	ListEcho(context.Context, *ListEchoRequest) (*ListEchoResponse, error)
 	UpdateEcho(context.Context, *UpdateEchoRequest) (*UpdateEchoResponse, error)
 	DeleteEcho(context.Context, *DeleteEchoRequest) (*DeleteEchoResponse, error)
+	GetEcho(context.Context, *GetEchoRequest) (*EchoRecord, error)
 	mustEmbedUnimplementedEchoServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedEchoServiceServer) UpdateEcho(context.Context, *UpdateEchoReq
 }
 func (UnimplementedEchoServiceServer) DeleteEcho(context.Context, *DeleteEchoRequest) (*DeleteEchoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEcho not implemented")
+}
+func (UnimplementedEchoServiceServer) GetEcho(context.Context, *GetEchoRequest) (*EchoRecord, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEcho not implemented")
 }
 func (UnimplementedEchoServiceServer) mustEmbedUnimplementedEchoServiceServer() {}
 
@@ -184,6 +198,24 @@ func _EchoService_DeleteEcho_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_GetEcho_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEchoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).GetEcho(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/echo.v1.EchoService/GetEcho",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).GetEcho(ctx, req.(*GetEchoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEcho",
 			Handler:    _EchoService_DeleteEcho_Handler,
+		},
+		{
+			MethodName: "GetEcho",
+			Handler:    _EchoService_GetEcho_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

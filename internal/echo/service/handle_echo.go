@@ -79,6 +79,20 @@ func (s *EchoService) DeleteEcho(ctx context.Context, req *v1.DeleteEchoRequest)
 	}, nil
 }
 
+func (s *EchoService) GetEcho(ctx context.Context, req *v1.GetEchoRequest) (*v1.EchoRecord, error) {
+	echo, err := s.uc.GetEcho(ctx, req.GetId())
+	if errors.Is(err, biz.ErrNotFound) {
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	return &v1.EchoRecord{
+		Id:       pbtools.ToProtoInt64(int64(echo.ID)),
+		Message:  pbtools.ToProtoString(echo.Message),
+		Echo:     pbtools.ToProtoString(echo.EchoMessage),
+		EchoTime: pbtools.ToProtoTimestamp(*echo.CreateTime),
+	}, nil
+}
+
 func (s *EchoService) mustEmbedUnimplementedEchoServiceServer() {
 	panic("not implemented") // Implement
 }

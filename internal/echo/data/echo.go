@@ -8,6 +8,7 @@ import (
 
 	"github.com/yangchnet/skeleton/internal/echo/biz"
 	"github.com/yangchnet/skeleton/internal/echo/data/ent"
+	"github.com/yangchnet/skeleton/internal/echo/data/ent/echo"
 	"github.com/yangchnet/skeleton/pkg/cache"
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
@@ -127,7 +128,40 @@ func (r *Data) DeleteEcho(ctx context.Context, ID int64) error {
 
 // GetEcho get echo record by id.
 func (r *Data) GetEcho(ctx context.Context, ID int64) (*biz.Echo, error) {
-	panic("not implemented") // TODO: Implement
+	var e *ent.Echo
+	var err error
+	cacheKey := echoCacheKey(int(ID))
+	e, found := r.getEchoCache(ctx, cacheKey)
+	if found {
+		return &biz.Echo{
+			ID:          e.ID,
+			Message:     e.Message,
+			EchoMessage: e.EchoMessage,
+			CreateTime:  &e.CreateTime,
+		}, nil
+	}
+
+	e, err = r.db.Echo.
+		Query().
+		Where(echo.ID(int(ID))).
+		Only(ctx)
+	if err != nil {
+		logger.Error("error querying echo record: ", err)
+		if ent.IsNotFound(err) {
+			return nil, biz.ErrNotFound
+		}
+
+		return nil, err
+	}
+
+	r.setEchoCache(ctx, e, cacheKey)
+
+	return &biz.Echo{
+		ID:          e.ID,
+		Message:     e.Message,
+		EchoMessage: e.EchoMessage,
+		CreateTime:  &e.CreateTime,
+	}, nil
 }
 
 func (r *Data) setEchoCache(ctx context.Context, echo *ent.Echo, key string) {
@@ -150,4 +184,21 @@ func (r *Data) setEchoCache(ctx context.Context, echo *ent.Echo, key string) {
 
 func (r *Data) delEchoCache(ctx context.Context, key string) {
 	_ = r.cache.Delete(ctx, key)
+}
+
+func (r *Data) getEchoCache(ctx context.Context, key string) (echo *ent.Echo, found bool) {
+	e, found := r.cache.Get(ctx, key)
+	if !found {
+		return nil, false
+	}
+
+	e_ := e.(string)
+
+	if err := json.Unmarshal([]byte(e_), &echo); err != nil {
+		logger.Warn("error unmarshalling echo from cache ", err)
+
+		return nil, false
+	}
+
+	return echo, true
 }

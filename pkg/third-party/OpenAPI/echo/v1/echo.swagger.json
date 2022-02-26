@@ -52,6 +52,38 @@
       }
     },
     "/api/v1/echo/{id}": {
+      "get": {
+        "summary": "get echo",
+        "description": "get echo record by id",
+        "operationId": "EchoService_GetEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1EchoRecord"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64",
+            "pattern": "[^/]+"
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ]
+      },
       "delete": {
         "summary": "delete echo",
         "description": "delete echo record",

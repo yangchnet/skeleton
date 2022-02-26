@@ -12,7 +12,11 @@ data:
   database:
     driver: mysql
     dsn: root:insecure@tcp(127.0.0.1:13306)/echo?parseTime=true&charset=utf8mb4&loc=Local
-  # TODO: redis
+  redis:
+    host: localhost
+    port: 16379
+    password:
+    db: 0
 log:
   level: 0 # 0: debug, 1: info, 2: warn, 3: error, 4: panic, 5, fatal
   formatter: text # text/json

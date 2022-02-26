@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 
 	entsql "entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
@@ -11,11 +12,14 @@ import (
 	"github.com/yangchnet/skeleton/internal/echo/conf"
 	"github.com/yangchnet/skeleton/internal/echo/data/ent"
 	"github.com/yangchnet/skeleton/internal/echo/data/ent/migrate"
+	"github.com/yangchnet/skeleton/pkg/cache"
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
 
 // ProviderSet provided NewData and NewEnt.
-var ProviderSet = wire.NewSet(NewEnt, NewData)
+var ProviderSet = wire.NewSet(NewEnt, NewData, NewCache)
+
+var serviceName = "echo_service"
 
 // NewEnt create an ent client.
 func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
@@ -46,13 +50,24 @@ func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
 	return client, nil
 }
 
+// NewCache creates a new cache.
+func NewCache(c *conf.Bootstrap) cache.CacheInterface {
+	return cache.NewRedisStore(
+		fmt.Sprintf("%s:%d", c.Data.Redis.Host, c.Data.Redis.Port),
+		c.Data.Redis.Password,
+		int(c.Data.Redis.Db))
+}
+
 // Data handle db connection and implemented biz.EchoRepo.
 type Data struct {
-	db *ent.Client
-	// TODO: redis
+	db    *ent.Client
+	cache cache.CacheInterface
 }
 
 // NewData creates a new data which is a biz.EchoRepo.
-func NewData(ec *ent.Client) biz.EchoRepo {
-	return &Data{db: ec}
+func NewData(ec *ent.Client, cache cache.CacheInterface) biz.EchoRepo {
+	return &Data{
+		db:    ec,
+		cache: cache,
+	}
 }

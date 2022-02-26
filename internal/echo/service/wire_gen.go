@@ -20,7 +20,8 @@ func InitService(ctx context.Context, conf2 *conf.Bootstrap) (*EchoService, erro
 	if err != nil {
 		return nil, err
 	}
-	echoRepo := data.NewData(client)
+	cacheInterface := data.NewCache(conf2)
+	echoRepo := data.NewData(client, cacheInterface)
 	echoCase := biz.NewEchoCase(echoRepo)
 	echoService := NewEchoService(echoCase)
 	return echoService, nil

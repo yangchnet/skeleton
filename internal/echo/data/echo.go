@@ -2,15 +2,23 @@ package data
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/yangchnet/skeleton/internal/echo/biz"
 	"github.com/yangchnet/skeleton/internal/echo/data/ent"
+	"github.com/yangchnet/skeleton/pkg/cache"
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
 
 var _ biz.EchoRepo = (*Data)(nil)
 
+var echoCacheKey = func(id int) string {
+	return fmt.Sprintf("%s%d", "echo_record_key_", id)
+}
+
+// CreateEcho creates a new echo record and cache it by key id.
 func (r *Data) CreateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error) {
 	echoModel, err := r.db.Echo.
 		Create().
@@ -19,8 +27,12 @@ func (r *Data) CreateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error
 		Save(ctx)
 	if err != nil {
 		logger.Errorf("create echo failed: ", err)
+
 		return nil, err
 	}
+
+	cacheKey := echoCacheKey(echoModel.ID)
+	r.setEchoCache(ctx, echoModel, cacheKey)
 
 	return &biz.Echo{
 		ID:          echoModel.ID,
@@ -29,6 +41,7 @@ func (r *Data) CreateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error
 	}, nil
 }
 
+// ListEcho returns a list of Echo.
 func (r *Data) ListEcho(ctx context.Context, offset int64, limit int64) ([]*biz.Echo, error) {
 	echoList, err := r.db.Echo.
 		Query().
@@ -52,6 +65,7 @@ func (r *Data) ListEcho(ctx context.Context, offset int64, limit int64) ([]*biz.
 	return list, nil
 }
 
+// UpdateEcho updates the echo and set cache.
 func (r *Data) UpdateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error) {
 	e, err := r.db.Echo.
 		UpdateOneID(echo.ID).
@@ -66,6 +80,9 @@ func (r *Data) UpdateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error
 		}
 	}
 
+	cacheKey := echoCacheKey(echo.ID)
+	r.setEchoCache(ctx, e, cacheKey)
+
 	return &biz.Echo{
 		ID:          e.ID,
 		Message:     e.Message,
@@ -73,6 +90,7 @@ func (r *Data) UpdateEcho(ctx context.Context, echo *biz.Echo) (*biz.Echo, error
 	}, nil
 }
 
+// DeleteEcho delete echo record.
 func (r *Data) DeleteEcho(ctx context.Context, ID int64) error {
 	// 直接删除
 	// if err := r.db.Echo.
@@ -86,7 +104,7 @@ func (r *Data) DeleteEcho(ctx context.Context, ID int64) error {
 	// return nil
 
 	// 暂时标记为删除，等待服务空闲时删除
-	_, err := r.db.Echo.
+	e, err := r.db.Echo.
 		UpdateOneID(int(ID)).
 		SetDeleted(true).
 		SetDeleteTime(time.Now()).
@@ -101,9 +119,35 @@ func (r *Data) DeleteEcho(ctx context.Context, ID int64) error {
 		return err
 	}
 
+	cacheKey := echoCacheKey(e.ID)
+	r.delEchoCache(ctx, cacheKey)
+
 	return nil
 }
 
+// GetEcho get echo record by id.
 func (r *Data) GetEcho(ctx context.Context, ID int64) (*biz.Echo, error) {
 	panic("not implemented") // TODO: Implement
+}
+
+func (r *Data) setEchoCache(ctx context.Context, echo *ent.Echo, key string) {
+	marshal, err := json.Marshal(echo)
+	if err != nil {
+		logger.Error("error marshal echo record: ", err)
+
+		return
+	}
+
+	err = r.cache.Set(ctx, key, marshal, &cache.Options{
+		Expiration: time.Hour * 2,
+	})
+	if err != nil {
+		logger.Error("error set echo record: ", err)
+
+		return
+	}
+}
+
+func (r *Data) delEchoCache(ctx context.Context, key string) {
+	_ = r.cache.Delete(ctx, key)
 }

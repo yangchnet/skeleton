@@ -100,7 +100,7 @@ BLOCKER_TOOLS ?= goimports golangci-lint
 CRITICAL_TOOLS ?= mockgen protoc-gen-go protoc-gen-grpc-gateway \
  protoc-gen-go-grpc protoc-gen-openapiv2 wire buf \
  ent 
-TRIVIAL_TOOLS ?= 
+TRIVIAL_TOOLS ?= pm2
 
 COMMA := ,
 EMPTY :=

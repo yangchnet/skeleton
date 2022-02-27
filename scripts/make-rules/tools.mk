@@ -65,3 +65,7 @@ install.migrate:
 .PHONY: install.ent
 install.ent:
 	@$(GO) install entgo.io/ent/cmd/ent
+
+.PHONY: install.pm2
+install.pm2:
+	@npm install -g pm2

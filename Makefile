@@ -32,7 +32,3 @@ clean:
 .PHONY: tools
 tools:
 	@$(MAKE) tools.install
-
-.PHONY: run
-run:
-	@$(MAKE) run

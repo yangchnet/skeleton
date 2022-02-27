@@ -1,7 +1,12 @@
 APPS ?= openapi iam-service
 
 .PHONY: run
-run: $(addprefix run.,$(APPS))
+run: tools.verify.pm2
+	@pm2 start skeleton.config.js
+
+.PHONY: stop
+stop: tools.verify.pm2
+	@pm2 del all
 
 .PHONY: run.%
 run.%:

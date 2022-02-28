@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package iam.v1;
+
+option go_package = "github.com/yangchnet/skeleton/api/iam/v1;v1";
+
+import "common/security.proto";
+import "iam/v1/message.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+service IamService {
+  // Token
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "login"
+      description : "basic authentication"
+      security : {}
+    };
+    option (google.api.http) = {
+      get : "/api/v1/login"
+    };
+  };
+  // rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {};
+  // ====================================================================
+  // User Manage
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {};
+  // rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {};
+  // rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {};
+  // rpc GetUser(GetUserRequest) returns (GetUserResponse) {};
+  // ====================================================================
+  // Role Manage
+  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {};
+  // rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {};
+  // rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {};
+  // rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {};
+  // ====================================================================
+  // Tenant Manage
+  rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {};
+  // rpc UpdateTenant(UpdateTenantRequest) returns (UpdateTenantResponse) {};
+  // rpc DeleteTenant(DeleteTenantRequest) returns (DeleteTenantResponse) {};
+  // rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {};
+  // ====================================================================
+  // Bind Manage
+  rpc CreateBinding(CreateBindingRequest) returns (CreateBindingResponse) {};
+  // rpc UpdateBinding(UpdateBindingRequest) returns (UpdateBindingResponse) {};
+  // rpc DeleteBinding(DeleteBindingRequest) returns (DeleteBindingResponse) {};
+  // rpc GetBinding(GetBindingRequest) returns (GetBindingResponse) {};
+  // ====================================================================
+  // Policy Manage
+  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse) {};
+  // rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {};
+  // ====================================================================
+  // CanDo
+  // rpc CanDo(CanDoRequest) returns (CanDoResponse) {};
+}

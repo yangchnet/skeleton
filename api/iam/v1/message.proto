@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package iam.v1;
+
+option go_package = "github.com/yangchnet/skeleton/api/iam/v1;v1";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/duration.proto";
+
+// Token
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  google.protobuf.Duration expiration = 2;
+}
+
+message RefreshTokenRequest {}
+
+message RefreshTokenResponse {}
+
+// User Manage
+message CreateUserRequest {}
+
+message CreateUserResponse {}
+
+message DeleteUserRequest {}
+
+message DeleteUserResponse {}
+
+message UpdateUserRequest {}
+
+message UpdateUserResponse {}
+
+message GetUserRequest {}
+
+message GetUserResponse {}
+
+// Role Manage
+message CreateRoleRequest {}
+
+message CreateRoleResponse {}
+
+message UpdateRoleRequest {}
+
+message UpdateRoleResponse {}
+
+message GetRoleRequest {}
+
+message GetRoleResponse {}
+
+message DeleteRoleRequest {}
+
+message DeleteRoleResponse {}
+
+// Tenant Manage
+message CreateTenantRequest {}
+
+message CreateTenantResponse {}
+
+message DeleteTenantRequest {}
+
+message DeleteTenantResponse {}
+
+message UpdateTenantRequest {}
+
+message UpdateTenantResponse {}
+
+message GetTenantRequest {}
+
+message GetTenantResponse {}
+
+// Binding Manage
+message CreateBindingRequest {}
+
+message CreateBindingResponse {}
+
+message UpdateBindingRequest {}
+
+message UpdateBindingResponse {}
+
+message DeleteBindingRequest {}
+
+message DeleteBindingResponse {}
+
+message GetBindingRequest {}
+
+message GetBindingResponse {}
+
+// Policy Manage
+message CreatePolicyRequest {}
+
+message CreatePolicyResponse {}
+
+message DeletePolicyRequest {}
+
+message DeletePolicyResponse {}
+
+// CanDo
+message CanDoRequest {}
+
+message CanDoResponse {}

@@ -1,0 +1,27 @@
+server:
+  http:
+    host: 0.0.0.0
+    port: 10002
+    timeout: 1s
+  grpc:
+    service_name: iam_service
+    host: 0.0.0.0
+    port: 10003
+    timeout: 1s
+data:
+  database:
+    driver: mysql
+    dsb: root:insecure@tcp(127.0.0.0:13306)/iam?parseTime=true&charset=utf8mb4&loc=Local
+  redis:
+    host: localhost
+    port: 16379
+    password:
+    db: 0
+log:
+  level: 0 # 0: debug, 1: info, 2: warn, 3: error, 4: panic, 5, fatal
+  formatter: text # text/json
+  disable_caller: false # log中不记录文件名及行号
+  disable_color: false # 无颜色输出log
+  enable_abs_path: true # 输出文件名的完整的路径
+  enable_func: false # 输出打印log的函数名
+  ignore_basic_fields: false # 日志中不记录时间、文件等信息

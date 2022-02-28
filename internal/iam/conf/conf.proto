@@ -1,7 +1,7 @@
 syntax = "proto3";
-package echo.conf;
+package iam.conf;
 
-option go_package = "github.com/yangchnet/skeleton/internal/echo/conf;conf";
+option go_package = "github.com/yangchnet/skeleton/internal/iam/conf;conf";
 
 import "google/protobuf/duration.proto";
 

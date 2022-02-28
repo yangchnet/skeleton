@@ -1,0 +1,114 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "iam/v1/iam.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "IamService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/login": {
+      "get": {
+        "summary": "login",
+        "description": "basic authentication",
+        "operationId": "IamService_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IamService"
+        ],
+        "security": []
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateBindingResponse": {
+      "type": "object"
+    },
+    "v1CreatePolicyResponse": {
+      "type": "object"
+    },
+    "v1CreateRoleResponse": {
+      "type": "object"
+    },
+    "v1CreateTenantResponse": {
+      "type": "object"
+    },
+    "v1CreateUserResponse": {
+      "type": "object"
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "expiration": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -45,6 +45,8 @@ func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
 		logger.Fatalf("failed creating schema resources: %v", err)
 	}
 
+	_ = seed(context.Background(), client)
+
 	return client, nil
 }
 

@@ -12,6 +12,6 @@ type IamCase struct {
 	repo IamRepo
 }
 
-func NewIamCase(repo IamRepo) *IamCase {
+func NewIamCase(ctx context.Context, repo IamRepo) *IamCase {
 	return &IamCase{repo: repo}
 }

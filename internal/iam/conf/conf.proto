@@ -40,6 +40,7 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+  bool seed = 3;
 }
 
 message Log {

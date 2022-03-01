@@ -20,7 +20,7 @@ import (
 var ProviderSet = wire.NewSet(NewEnt, NewData, NewCache)
 
 // NewEnt create an ent client.
-func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
+func NewEnt(ctx context.Context, c *conf.Bootstrap) (*ent.Client, error) {
 	drv, err := entsql.Open(c.Data.Database.Driver, c.Data.Database.Dsn)
 	if err != nil {
 		logger.Error("Error creating database connection: %v", err)
@@ -31,7 +31,7 @@ func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
 	client := ent.NewClient(ent.Driver(drv))
 
 	if err := client.Schema.Create(
-		context.Background(),
+		ctx,
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),
 		migrate.WithForeignKeys(false),
@@ -49,7 +49,7 @@ func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {
 }
 
 // NewCache creates a new cache.
-func NewCache(c *conf.Bootstrap) cache.CacheInterface {
+func NewCache(ctx context.Context, c *conf.Bootstrap) cache.CacheInterface {
 	return cache.NewRedisStore(
 		fmt.Sprintf("%s:%d", c.Data.Redis.Host, c.Data.Redis.Port),
 		c.Data.Redis.Password,
@@ -63,7 +63,7 @@ type Data struct {
 }
 
 // NewData creates a new data which is a biz.EchoRepo.
-func NewData(ec *ent.Client, cache cache.CacheInterface) biz.EchoRepo {
+func NewData(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.EchoRepo {
 	return &Data{
 		db:    ec,
 		cache: cache,

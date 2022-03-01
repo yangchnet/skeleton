@@ -16,13 +16,13 @@ import (
 // Injectors from wire.go:
 
 func InitService(ctx context.Context, conf2 *conf.Bootstrap) (*EchoService, error) {
-	client, err := data.NewEnt(conf2)
+	client, err := data.NewEnt(ctx, conf2)
 	if err != nil {
 		return nil, err
 	}
-	cacheInterface := data.NewCache(conf2)
-	echoRepo := data.NewData(client, cacheInterface)
-	echoCase := biz.NewEchoCase(echoRepo)
-	echoService := NewEchoService(echoCase)
+	cacheInterface := data.NewCache(ctx, conf2)
+	echoRepo := data.NewData(ctx, client, cacheInterface)
+	echoCase := biz.NewEchoCase(ctx, echoRepo)
+	echoService := NewEchoService(ctx, echoCase)
 	return echoService, nil
 }

@@ -31,7 +31,7 @@ type EchoCase struct {
 }
 
 // NewEchoCase creates a new EchoCase.
-func NewEchoCase(repo EchoRepo) *EchoCase {
+func NewEchoCase(ctx context.Context, repo EchoRepo) *EchoCase {
 	return &EchoCase{repo: repo}
 }
 

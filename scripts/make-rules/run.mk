@@ -12,3 +12,8 @@ stop: tools.verify.pm2
 run.%:
 	@echo "==========> Starting $* server"
 	@go build -o _output/app/debug-$* cmd/$*/$*.go && _output/app/debug-$*
+
+.PHONY: run.withseed.%
+run.withseed.%:
+	@echo "==========> Starting $* server"
+	@go build -o _output/app/debug-$* cmd/$*/$*.go && _output/app/debug-$* -s true

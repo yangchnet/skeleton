@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"time"
 
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -12,16 +11,22 @@ import (
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
 
-var confLoc *string = flag.StringP("conf", "c", "configs/iam/config.yaml", "config file location")
+var (
+	confLoc *string = flag.StringP("conf", "c", "configs/iam/config.yaml", "config file location")
+	seed    *bool   = flag.BoolP("seed", "s", false, "seed or not")
+)
 
 func main() {
 	flag.Parse()
 
 	bc := loadConfig(*confLoc)
+	if *seed {
+		bc.Data.Seed = true
+	}
 
 	setLogger(bc)
 
-	time.Sleep(time.Second * 10)
+	// time.Sleep(time.Second * 10)
 	server.GrpcServe(context.Background(), bc)
 }
 

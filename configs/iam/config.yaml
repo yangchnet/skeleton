@@ -17,6 +17,7 @@ data:
     port: 16379
     password:
     db: 0
+  seed: false
 log:
   level: 0 # 0: debug, 1: info, 2: warn, 3: error, 4: panic, 5, fatal
   formatter: text # text/json

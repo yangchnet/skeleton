@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/google/wire"
 	v1 "github.com/yangchnet/skeleton/api/echo/v1"
 	"github.com/yangchnet/skeleton/internal/echo/biz"
@@ -17,7 +19,7 @@ type EchoService struct {
 }
 
 // NewEchoService creates a new EchoService.
-func NewEchoService(uc *biz.EchoCase) *EchoService {
+func NewEchoService(ctx context.Context, uc *biz.EchoCase) *EchoService {
 	return &EchoService{
 		uc: uc,
 	}

@@ -22,3 +22,7 @@ image.up.mysql:
 image.up.redis:
 	@$(DOCKER) run --name $(PROJECT_NAME)-redis-runtime --restart=always -p 16379:6379 -d $(PROJECT_NAME)-redis
 
+.PHONY: image.del.mysql
+image.del.mysql:
+	@$(DOCKER) rm -f skeleton-mysql-runtime
+

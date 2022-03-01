@@ -54,9 +54,51 @@
         ],
         "security": []
       }
+    },
+    "/api/v1/user": {
+      "post": {
+        "summary": "user register",
+        "description": "create user",
+        "operationId": "IamService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IamService"
+        ]
+      }
     }
   },
   "definitions": {
+    "commonOperationResult": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAIL"
+      ],
+      "default": "SUCCESS"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -96,8 +138,44 @@
     "v1CreateTenantResponse": {
       "type": "object"
     },
+    "v1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "title": "用户名"
+        },
+        "password": {
+          "type": "string",
+          "title": "密码"
+        },
+        "phone": {
+          "type": "string",
+          "title": "手机号码，要求符合11位数字格式"
+        },
+        "email": {
+          "type": "string",
+          "title": "电子邮箱，要求符合通用电子邮箱格式"
+        }
+      },
+      "title": "User Manage"
+    },
     "v1CreateUserResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "title": "用户id"
+        },
+        "result": {
+          "$ref": "#/definitions/commonOperationResult",
+          "title": "创建结果"
+        },
+        "failReason": {
+          "type": "string",
+          "title": "失败原因（结果为FAIL时不为空）"
+        }
+      }
     },
     "v1LoginResponse": {
       "type": "object",

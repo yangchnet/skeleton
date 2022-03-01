@@ -6,6 +6,7 @@ option go_package = "github.com/yangchnet/skeleton/api/iam/v1;v1";
 
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/duration.proto";
+import "common/enum.proto";
 
 // Token
 message LoginRequest {
@@ -23,9 +24,25 @@ message RefreshTokenRequest {}
 message RefreshTokenResponse {}
 
 // User Manage
-message CreateUserRequest {}
+message CreateUserRequest {
+  // 用户名
+  string username = 1;
+  // 密码
+  string password = 2;
+  // 手机号码，要求符合11位数字格式
+  google.protobuf.StringValue phone = 3;
+  // 电子邮箱，要求符合通用电子邮箱格式
+  google.protobuf.StringValue email = 4;
+}
 
-message CreateUserResponse {}
+message CreateUserResponse {
+  // 用户id
+  google.protobuf.StringValue user_id = 1;
+  // 创建结果
+  common.OperationResult result = 2;
+  // 失败原因（结果为FAIL时不为空）
+  google.protobuf.StringValue fail_reason = 3;
+}
 
 message DeleteUserRequest {}
 

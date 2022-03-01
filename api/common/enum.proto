@@ -1,0 +1,10 @@
+syntax = "proto3";
+package common;
+
+// set go package name to pb
+option go_package = "github.com/yangchnet/skeleton/api/common";
+
+enum OperationResult {
+  SUCCESS = 0;
+  FAIL = 1;
+}

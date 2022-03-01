@@ -34,9 +34,9 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "authzpolicy_obj_policy",
+				Name:    "authzpolicy_obj",
 				Unique:  false,
-				Columns: []*schema.Column{AuthzPoliciesColumns[2], AuthzPoliciesColumns[3]},
+				Columns: []*schema.Column{AuthzPoliciesColumns[2]},
 			},
 		},
 	}

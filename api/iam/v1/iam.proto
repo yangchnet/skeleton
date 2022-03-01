@@ -24,7 +24,17 @@ service IamService {
   // rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {};
   // ====================================================================
   // User Manage
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {};
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "user register"
+      description : "create user"
+      // security : {}
+    };
+    option (google.api.http) = {
+      post : "/api/v1/user"
+      body : "*"
+    };
+  };
   // rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {};
   // rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {};
   // rpc GetUser(GetUserRequest) returns (GetUserResponse) {};

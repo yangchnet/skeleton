@@ -6,6 +6,7 @@ import (
 
 	entsql "entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/yangchnet/skeleton/internal/iam/biz"
 	"github.com/yangchnet/skeleton/internal/iam/conf"
@@ -16,7 +17,7 @@ import (
 )
 
 // ProviderSet provided NewData and NewEnt.
-var ProviderSet = wire.NewSet(NewEnt, NewCache)
+var ProviderSet = wire.NewSet(NewEnt, NewCache, NewData)
 
 // NewEnt create an ent client.
 func NewEnt(c *conf.Bootstrap) (*ent.Client, error) {

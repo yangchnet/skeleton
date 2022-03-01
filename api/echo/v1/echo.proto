@@ -9,6 +9,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "common/security.proto";
+import "common/enum.proto";
 
 service EchoService {
   rpc CreateEcho(CreateEchoRequest) returns (CreateEchoResponse) {
@@ -93,7 +94,7 @@ message UpdateEchoRequest {
 
 message UpdateEchoResponse {
   // update result
-  OperationResult result = 1;
+  common.OperationResult result = 1;
 }
 
 message DeleteEchoRequest {
@@ -103,7 +104,7 @@ message DeleteEchoRequest {
 
 message DeleteEchoResponse {
   // delete result
-  OperationResult result = 1;
+  common.OperationResult result = 1;
 }
 
 message EchoRecord {
@@ -118,8 +119,3 @@ message EchoRecord {
 }
 
 message GetEchoRequest { int64 id = 1; }
-
-enum OperationResult {
-  SUCCESS = 0;
-  FAIL = 1;
-}

@@ -41,6 +41,6 @@ func (AuthzPolicy) Edges() []ent.Edge {
 // Indexes of the AuthzPolicy.
 func (AuthzPolicy) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("obj", "policy"),
+		index.Fields("obj"),
 	}
 }

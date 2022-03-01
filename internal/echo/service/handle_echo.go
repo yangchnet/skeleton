@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	v1common "github.com/yangchnet/skeleton/api/common"
 	v1 "github.com/yangchnet/skeleton/api/echo/v1"
 	"github.com/yangchnet/skeleton/internal/echo/biz"
 	"github.com/yangchnet/skeleton/tools/pbtools"
@@ -63,19 +64,19 @@ func (s *EchoService) UpdateEcho(ctx context.Context, req *v1.UpdateEchoRequest)
 	}
 
 	return &v1.UpdateEchoResponse{
-		Result: v1.OperationResult_SUCCESS,
+		Result: v1common.OperationResult_SUCCESS,
 	}, nil
 }
 
 func (s *EchoService) DeleteEcho(ctx context.Context, req *v1.DeleteEchoRequest) (*v1.DeleteEchoResponse, error) {
 	if err := s.uc.DeleteEcho(ctx, req.GetId().GetValue()); err != nil {
 		return &v1.DeleteEchoResponse{
-			Result: v1.OperationResult_FAIL,
+			Result: v1common.OperationResult_FAIL,
 		}, err
 	}
 
 	return &v1.DeleteEchoResponse{
-		Result: v1.OperationResult_SUCCESS,
+		Result: v1common.OperationResult_SUCCESS,
 	}, nil
 }
 

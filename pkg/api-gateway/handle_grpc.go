@@ -10,6 +10,7 @@ import (
 
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	echov1 "github.com/yangchnet/skeleton/api/echo/v1"
+	iamv1 "github.com/yangchnet/skeleton/api/iam/v1"
 	localGrpc "github.com/yangchnet/skeleton/pkg/grpc"
 	"github.com/yangchnet/skeleton/pkg/logger"
 	"google.golang.org/grpc"
@@ -28,6 +29,10 @@ var registers []registerWrapper = []registerWrapper{
 	{
 		f:        echov1.RegisterEchoServiceHandlerFromEndpoint,
 		endpoint: "127.0.0.1:10001", // FIXME
+	},
+	{
+		f:        iamv1.RegisterIamServiceHandlerFromEndpoint,
+		endpoint: "127.0.0.1:10003",
 	},
 }
 

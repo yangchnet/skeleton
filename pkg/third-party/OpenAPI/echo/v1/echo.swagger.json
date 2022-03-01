@@ -208,6 +208,14 @@
     }
   },
   "definitions": {
+    "commonOperationResult": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "FAIL"
+      ],
+      "default": "SUCCESS"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -257,7 +265,7 @@
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/v1OperationResult",
+          "$ref": "#/definitions/commonOperationResult",
           "title": "delete result"
         }
       }
@@ -302,19 +310,11 @@
         }
       }
     },
-    "v1OperationResult": {
-      "type": "string",
-      "enum": [
-        "SUCCESS",
-        "FAIL"
-      ],
-      "default": "SUCCESS"
-    },
     "v1UpdateEchoResponse": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/v1OperationResult",
+          "$ref": "#/definitions/commonOperationResult",
           "title": "update result"
         }
       }

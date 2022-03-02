@@ -58,12 +58,12 @@
       "get": {
         "summary": "login",
         "description": "basic authentication",
-        "operationId": "IamService_Login",
+        "operationId": "IamService_Token",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1LoginResponse"
+              "$ref": "#/definitions/v1TokenResponse"
             }
           },
           "default": {
@@ -89,8 +89,7 @@
         ],
         "tags": [
           "IamService"
-        ],
-        "security": []
+        ]
       }
     },
     "/api/v1/user": {
@@ -223,7 +222,7 @@
         }
       }
     },
-    "v1LoginResponse": {
+    "v1TokenResponse": {
       "type": "object",
       "properties": {
         "token": {

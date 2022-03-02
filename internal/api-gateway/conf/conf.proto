@@ -1,40 +1,26 @@
 syntax = "proto3";
-package echo.conf;
+package apigateway.conf;
 
-option go_package = "github.com/yangchnet/skeleton/internal/echo/conf;conf";
+option go_package = "github.com/yangchnet/skeleton/internal/api-gateway/conf;conf";
 
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
   Server server = 1;
-  Data data = 2;
+  Token token = 2;
   Log log = 3;
 }
 
 message Server {
-  message GRPC {
-    string service_name = 1;
+  message HTTP {
     string host = 3;
     int64 port = 4;
     google.protobuf.Duration timeout = 5;
   }
-  GRPC grpc = 2;
+  HTTP http = 2;
 }
 
-message Data {
-  message Database {
-    string driver = 1;
-    string dsn = 2;
-  }
-  message Redis {
-    string host = 1;
-    int64 port = 2;
-    string password = 3;
-    int64 db = 4;
-  }
-  Database database = 1;
-  Redis redis = 2;
-}
+message Token { string secret = 1; }
 
 message Log {
   int32 level = 1;

@@ -1,4 +1,4 @@
-package apigateway
+package middleware
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
 
-func (s *Server) log(ctx context.Context) gin.HandlerFunc {
+func Log(ctx context.Context) gin.HandlerFunc {
 	l := logger.StdLogger()
 
 	return func(c *gin.Context) {
@@ -43,7 +43,7 @@ func (s *Server) log(ctx context.Context) gin.HandlerFunc {
 	}
 }
 
-func (s *Server) recover(ctx context.Context) gin.HandlerFunc {
+func Recover(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if r := recover(); r != nil {

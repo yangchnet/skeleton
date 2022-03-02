@@ -7,6 +7,6 @@ import (
 )
 
 // Token.
-func (s *service) Login(_ context.Context, _ *v1.LoginRequest) (*v1.LoginResponse, error) {
+func (s *service) Token(ctx context.Context, req *v1.TokenRequest) (*v1.TokenResponse, error) {
 	panic("not implemented") // TODO: Implement
 }

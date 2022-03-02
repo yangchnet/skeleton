@@ -11,11 +11,11 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 service IamService {
   // Token
-  rpc Login(LoginRequest) returns (LoginResponse) {
+  rpc Token(TokenRequest) returns (TokenResponse) {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary : "login"
       description : "basic authentication"
-      security : {}
+      // security : {}
     };
     option (google.api.http) = {
       get : "/api/v1/login"

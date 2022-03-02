@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IamServiceClient interface {
 	// Token
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	Token(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*TokenResponse, error)
 	// rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {};
 	// ====================================================================
 	// User Manage
@@ -66,9 +66,9 @@ func NewIamServiceClient(cc grpc.ClientConnInterface) IamServiceClient {
 	return &iamServiceClient{cc}
 }
 
-func (c *iamServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/iam.v1.IamService/Login", in, out, opts...)
+func (c *iamServiceClient) Token(ctx context.Context, in *TokenRequest, opts ...grpc.CallOption) (*TokenResponse, error) {
+	out := new(TokenResponse)
+	err := c.cc.Invoke(ctx, "/iam.v1.IamService/Token", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (c *iamServiceClient) CanDo(ctx context.Context, in *CanDoRequest, opts ...
 // for forward compatibility
 type IamServiceServer interface {
 	// Token
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	Token(context.Context, *TokenRequest) (*TokenResponse, error)
 	// rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {};
 	// ====================================================================
 	// User Manage
@@ -174,8 +174,8 @@ type IamServiceServer interface {
 type UnimplementedIamServiceServer struct {
 }
 
-func (UnimplementedIamServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedIamServiceServer) Token(context.Context, *TokenRequest) (*TokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
 }
 func (UnimplementedIamServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -208,20 +208,20 @@ func RegisterIamServiceServer(s grpc.ServiceRegistrar, srv IamServiceServer) {
 	s.RegisterService(&IamService_ServiceDesc, srv)
 }
 
-func _IamService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+func _IamService_Token_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IamServiceServer).Login(ctx, in)
+		return srv.(IamServiceServer).Token(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/iam.v1.IamService/Login",
+		FullMethod: "/iam.v1.IamService/Token",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IamServiceServer).Login(ctx, req.(*LoginRequest))
+		return srv.(IamServiceServer).Token(ctx, req.(*TokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -342,8 +342,8 @@ var IamService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*IamServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
-			Handler:    _IamService_Login_Handler,
+			MethodName: "Token",
+			Handler:    _IamService_Token_Handler,
 		},
 		{
 			MethodName: "CreateUser",

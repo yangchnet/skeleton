@@ -77,7 +77,7 @@ func (CanDoRequest_Action) EnumDescriptor() ([]byte, []int) {
 
 // ====================================================================
 // Token
-type LoginRequest struct {
+type TokenRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -86,8 +86,8 @@ type LoginRequest struct {
 	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 }
 
-func (x *LoginRequest) Reset() {
-	*x = LoginRequest{}
+func (x *TokenRequest) Reset() {
+	*x = TokenRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_iam_v1_message_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -95,13 +95,13 @@ func (x *LoginRequest) Reset() {
 	}
 }
 
-func (x *LoginRequest) String() string {
+func (x *TokenRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LoginRequest) ProtoMessage() {}
+func (*TokenRequest) ProtoMessage() {}
 
-func (x *LoginRequest) ProtoReflect() protoreflect.Message {
+func (x *TokenRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_iam_v1_message_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -113,26 +113,26 @@ func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
-func (*LoginRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use TokenRequest.ProtoReflect.Descriptor instead.
+func (*TokenRequest) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *LoginRequest) GetUsername() string {
+func (x *TokenRequest) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
 	return ""
 }
 
-func (x *LoginRequest) GetPassword() string {
+func (x *TokenRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-type LoginResponse struct {
+type TokenResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -141,8 +141,8 @@ type LoginResponse struct {
 	Expiration *durationpb.Duration `protobuf:"bytes,2,opt,name=expiration,proto3" json:"expiration,omitempty"`
 }
 
-func (x *LoginResponse) Reset() {
-	*x = LoginResponse{}
+func (x *TokenResponse) Reset() {
+	*x = TokenResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_iam_v1_message_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -150,13 +150,13 @@ func (x *LoginResponse) Reset() {
 	}
 }
 
-func (x *LoginResponse) String() string {
+func (x *TokenResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LoginResponse) ProtoMessage() {}
+func (*TokenResponse) ProtoMessage() {}
 
-func (x *LoginResponse) ProtoReflect() protoreflect.Message {
+func (x *TokenResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_iam_v1_message_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -168,19 +168,19 @@ func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
-func (*LoginResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use TokenResponse.ProtoReflect.Descriptor instead.
+func (*TokenResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LoginResponse) GetToken() string {
+func (x *TokenResponse) GetToken() string {
 	if x != nil {
 		return x.Token
 	}
 	return ""
 }
 
-func (x *LoginResponse) GetExpiration() *durationpb.Duration {
+func (x *TokenResponse) GetExpiration() *durationpb.Duration {
 	if x != nil {
 		return x.Expiration
 	}
@@ -1819,12 +1819,12 @@ var file_iam_v1_message_proto_rawDesc = []byte{
 	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f,
 	0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x11,
 	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x65, 0x6e, 0x75, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0x46, 0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x6f, 0x22, 0x46, 0x0a, 0x0c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a,
 	0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x60, 0x0a, 0x0d, 0x4c, 0x6f, 0x67,
-	0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
+	0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x60, 0x0a, 0x0d, 0x54, 0x6f, 0x6b,
+	0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
 	0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
 	0x12, 0x39, 0x0a, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
@@ -1935,8 +1935,8 @@ var file_iam_v1_message_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_iam_v1_message_proto_msgTypes = make([]protoimpl.MessageInfo, 42)
 var file_iam_v1_message_proto_goTypes = []interface{}{
 	(CanDoRequest_Action)(0),       // 0: iam.v1.CanDoRequest.Action
-	(*LoginRequest)(nil),           // 1: iam.v1.LoginRequest
-	(*LoginResponse)(nil),          // 2: iam.v1.LoginResponse
+	(*TokenRequest)(nil),           // 1: iam.v1.TokenRequest
+	(*TokenResponse)(nil),          // 2: iam.v1.TokenResponse
 	(*RefreshTokenRequest)(nil),    // 3: iam.v1.RefreshTokenRequest
 	(*RefreshTokenResponse)(nil),   // 4: iam.v1.RefreshTokenResponse
 	(*CreateUserRequest)(nil),      // 5: iam.v1.CreateUserRequest
@@ -1982,7 +1982,7 @@ var file_iam_v1_message_proto_goTypes = []interface{}{
 	(common.OperationResult)(0),    // 45: common.OperationResult
 }
 var file_iam_v1_message_proto_depIdxs = []int32{
-	43, // 0: iam.v1.LoginResponse.expiration:type_name -> google.protobuf.Duration
+	43, // 0: iam.v1.TokenResponse.expiration:type_name -> google.protobuf.Duration
 	44, // 1: iam.v1.CreateUserRequest.phone:type_name -> google.protobuf.StringValue
 	44, // 2: iam.v1.CreateUserRequest.email:type_name -> google.protobuf.StringValue
 	44, // 3: iam.v1.CreateUserResponse.user_id:type_name -> google.protobuf.StringValue
@@ -2002,7 +2002,7 @@ func file_iam_v1_message_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_iam_v1_message_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginRequest); i {
+			switch v := v.(*TokenRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2014,7 +2014,7 @@ func file_iam_v1_message_proto_init() {
 			}
 		}
 		file_iam_v1_message_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginResponse); i {
+			switch v := v.(*TokenResponse); i {
 			case 0:
 				return &v.state
 			case 1:

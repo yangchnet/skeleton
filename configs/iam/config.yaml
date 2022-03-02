@@ -26,3 +26,6 @@ log:
   enable_abs_path: true # 输出文件名的完整的路径
   enable_func: false # 输出打印log的函数名
   ignore_basic_fields: false # 日志中不记录时间、文件等信息
+token:
+  secret: 326c9f73b0f45705a73eb020a32d790a
+  expiration: 7200 # seconds

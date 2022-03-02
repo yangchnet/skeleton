@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Log log = 3;
+  Token token = 4;
 }
 
 message Server {
@@ -51,4 +52,9 @@ message Log {
   bool enable_abs_path = 5;
   bool enable_func = 6;
   bool ignore_basic_fields = 7;
+}
+
+message Token {
+  string secret = 1;
+  google.protobuf.Duration expiration = 5;
 }

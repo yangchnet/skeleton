@@ -20,7 +20,10 @@ message Server {
   HTTP http = 2;
 }
 
-message Token { string secret = 1; }
+message Token {
+  string secret = 1;
+  google.protobuf.Duration expiration = 5;
+}
 
 message Log {
   int32 level = 1;

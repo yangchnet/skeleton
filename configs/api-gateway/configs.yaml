@@ -5,6 +5,7 @@ server:
     timeout: 1s
 token:
   secret: 326c9f73b0f45705a73eb020a32d790a
+  expiration: 7200 # seconds
 log:
   level: 0 # 0: debug, 1: info, 2: warn, 3: error, 4: panic, 5, fatal
   formatter: text # text/json

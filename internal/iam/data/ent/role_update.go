@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/predicate"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
+	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
 )
 
 // RoleUpdate is the builder for updating Role entities.
@@ -61,19 +61,19 @@ func (ru *RoleUpdate) ClearUpdateTime() *RoleUpdate {
 	return ru
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (ru *RoleUpdate) AddBindingIDs(ids ...int) *RoleUpdate {
-	ru.mutation.AddBindingIDs(ids...)
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (ru *RoleUpdate) AddUserIDs(ids ...int) *RoleUpdate {
+	ru.mutation.AddUserIDs(ids...)
 	return ru
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (ru *RoleUpdate) AddBindings(b ...*BindUserRole) *RoleUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddUsers adds the "users" edges to the User entity.
+func (ru *RoleUpdate) AddUsers(u ...*User) *RoleUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return ru.AddBindingIDs(ids...)
+	return ru.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
@@ -81,25 +81,25 @@ func (ru *RoleUpdate) Mutation() *RoleMutation {
 	return ru.mutation
 }
 
-// ClearBindings clears all "bindings" edges to the BindUserRole entity.
-func (ru *RoleUpdate) ClearBindings() *RoleUpdate {
-	ru.mutation.ClearBindings()
+// ClearUsers clears all "users" edges to the User entity.
+func (ru *RoleUpdate) ClearUsers() *RoleUpdate {
+	ru.mutation.ClearUsers()
 	return ru
 }
 
-// RemoveBindingIDs removes the "bindings" edge to BindUserRole entities by IDs.
-func (ru *RoleUpdate) RemoveBindingIDs(ids ...int) *RoleUpdate {
-	ru.mutation.RemoveBindingIDs(ids...)
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (ru *RoleUpdate) RemoveUserIDs(ids ...int) *RoleUpdate {
+	ru.mutation.RemoveUserIDs(ids...)
 	return ru
 }
 
-// RemoveBindings removes "bindings" edges to BindUserRole entities.
-func (ru *RoleUpdate) RemoveBindings(b ...*BindUserRole) *RoleUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// RemoveUsers removes "users" edges to User entities.
+func (ru *RoleUpdate) RemoveUsers(u ...*User) *RoleUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return ru.RemoveBindingIDs(ids...)
+	return ru.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -222,33 +222,33 @@ func (ru *RoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: role.FieldUpdateTime,
 		})
 	}
-	if ru.mutation.BindingsCleared() {
+	if ru.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.RemovedBindingsIDs(); len(nodes) > 0 && !ru.mutation.BindingsCleared() {
+	if nodes := ru.mutation.RemovedUsersIDs(); len(nodes) > 0 && !ru.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -257,17 +257,17 @@ func (ru *RoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := ru.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -327,19 +327,19 @@ func (ruo *RoleUpdateOne) ClearUpdateTime() *RoleUpdateOne {
 	return ruo
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (ruo *RoleUpdateOne) AddBindingIDs(ids ...int) *RoleUpdateOne {
-	ruo.mutation.AddBindingIDs(ids...)
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (ruo *RoleUpdateOne) AddUserIDs(ids ...int) *RoleUpdateOne {
+	ruo.mutation.AddUserIDs(ids...)
 	return ruo
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (ruo *RoleUpdateOne) AddBindings(b ...*BindUserRole) *RoleUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddUsers adds the "users" edges to the User entity.
+func (ruo *RoleUpdateOne) AddUsers(u ...*User) *RoleUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return ruo.AddBindingIDs(ids...)
+	return ruo.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
@@ -347,25 +347,25 @@ func (ruo *RoleUpdateOne) Mutation() *RoleMutation {
 	return ruo.mutation
 }
 
-// ClearBindings clears all "bindings" edges to the BindUserRole entity.
-func (ruo *RoleUpdateOne) ClearBindings() *RoleUpdateOne {
-	ruo.mutation.ClearBindings()
+// ClearUsers clears all "users" edges to the User entity.
+func (ruo *RoleUpdateOne) ClearUsers() *RoleUpdateOne {
+	ruo.mutation.ClearUsers()
 	return ruo
 }
 
-// RemoveBindingIDs removes the "bindings" edge to BindUserRole entities by IDs.
-func (ruo *RoleUpdateOne) RemoveBindingIDs(ids ...int) *RoleUpdateOne {
-	ruo.mutation.RemoveBindingIDs(ids...)
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (ruo *RoleUpdateOne) RemoveUserIDs(ids ...int) *RoleUpdateOne {
+	ruo.mutation.RemoveUserIDs(ids...)
 	return ruo
 }
 
-// RemoveBindings removes "bindings" edges to BindUserRole entities.
-func (ruo *RoleUpdateOne) RemoveBindings(b ...*BindUserRole) *RoleUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// RemoveUsers removes "users" edges to User entities.
+func (ruo *RoleUpdateOne) RemoveUsers(u ...*User) *RoleUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return ruo.RemoveBindingIDs(ids...)
+	return ruo.RemoveUserIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -512,33 +512,33 @@ func (ruo *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) 
 			Column: role.FieldUpdateTime,
 		})
 	}
-	if ruo.mutation.BindingsCleared() {
+	if ruo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.RemovedBindingsIDs(); len(nodes) > 0 && !ruo.mutation.BindingsCleared() {
+	if nodes := ruo.mutation.RemovedUsersIDs(); len(nodes) > 0 && !ruo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -547,17 +547,17 @@ func (ruo *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := ruo.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}

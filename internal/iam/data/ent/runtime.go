@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/schema"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
@@ -49,20 +48,6 @@ func init() {
 	authzpolicyDescCreateTime := authzpolicyFields[4].Descriptor()
 	// authzpolicy.DefaultCreateTime holds the default value on creation for the create_time field.
 	authzpolicy.DefaultCreateTime = authzpolicyDescCreateTime.Default.(func() time.Time)
-	binduserroleFields := schema.BindUserRole{}.Fields()
-	_ = binduserroleFields
-	// binduserroleDescUsername is the schema descriptor for username field.
-	binduserroleDescUsername := binduserroleFields[0].Descriptor()
-	// binduserrole.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
-	binduserrole.UsernameValidator = binduserroleDescUsername.Validators[0].(func(string) error)
-	// binduserroleDescRolename is the schema descriptor for rolename field.
-	binduserroleDescRolename := binduserroleFields[1].Descriptor()
-	// binduserrole.RolenameValidator is a validator for the "rolename" field. It is called by the builders before save.
-	binduserrole.RolenameValidator = binduserroleDescRolename.Validators[0].(func(string) error)
-	// binduserroleDescCreateTime is the schema descriptor for create_time field.
-	binduserroleDescCreateTime := binduserroleFields[2].Descriptor()
-	// binduserrole.DefaultCreateTime holds the default value on creation for the create_time field.
-	binduserrole.DefaultCreateTime = binduserroleDescCreateTime.Default.(func() time.Time)
 	roleFields := schema.Role{}.Fields()
 	_ = roleFields
 	// roleDescRolename is the schema descriptor for rolename field.

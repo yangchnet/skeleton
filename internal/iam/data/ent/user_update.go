@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/predicate"
+	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
 )
@@ -144,19 +144,19 @@ func (uu *UserUpdate) AddPolicys(a ...*AuthzPolicy) *UserUpdate {
 	return uu.AddPolicyIDs(ids...)
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (uu *UserUpdate) AddBindingIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddBindingIDs(ids...)
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (uu *UserUpdate) AddRoleIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddRoleIDs(ids...)
 	return uu
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (uu *UserUpdate) AddBindings(b ...*BindUserRole) *UserUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uu *UserUpdate) AddRoles(r ...*Role) *UserUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uu.AddBindingIDs(ids...)
+	return uu.AddRoleIDs(ids...)
 }
 
 // SetBelongID sets the "belong" edge to the Tenant entity by ID.
@@ -204,25 +204,25 @@ func (uu *UserUpdate) RemovePolicys(a ...*AuthzPolicy) *UserUpdate {
 	return uu.RemovePolicyIDs(ids...)
 }
 
-// ClearBindings clears all "bindings" edges to the BindUserRole entity.
-func (uu *UserUpdate) ClearBindings() *UserUpdate {
-	uu.mutation.ClearBindings()
+// ClearRoles clears all "roles" edges to the Role entity.
+func (uu *UserUpdate) ClearRoles() *UserUpdate {
+	uu.mutation.ClearRoles()
 	return uu
 }
 
-// RemoveBindingIDs removes the "bindings" edge to BindUserRole entities by IDs.
-func (uu *UserUpdate) RemoveBindingIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveBindingIDs(ids...)
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (uu *UserUpdate) RemoveRoleIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveRoleIDs(ids...)
 	return uu
 }
 
-// RemoveBindings removes "bindings" edges to BindUserRole entities.
-func (uu *UserUpdate) RemoveBindings(b ...*BindUserRole) *UserUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// RemoveRoles removes "roles" edges to Role entities.
+func (uu *UserUpdate) RemoveRoles(r ...*Role) *UserUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uu.RemoveBindingIDs(ids...)
+	return uu.RemoveRoleIDs(ids...)
 }
 
 // ClearBelong clears the "belong" edge to the Tenant entity.
@@ -466,33 +466,33 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.BindingsCleared() {
+	if uu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedBindingsIDs(); len(nodes) > 0 && !uu.mutation.BindingsCleared() {
+	if nodes := uu.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -501,17 +501,17 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -687,19 +687,19 @@ func (uuo *UserUpdateOne) AddPolicys(a ...*AuthzPolicy) *UserUpdateOne {
 	return uuo.AddPolicyIDs(ids...)
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (uuo *UserUpdateOne) AddBindingIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddBindingIDs(ids...)
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (uuo *UserUpdateOne) AddRoleIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddRoleIDs(ids...)
 	return uuo
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (uuo *UserUpdateOne) AddBindings(b ...*BindUserRole) *UserUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uuo *UserUpdateOne) AddRoles(r ...*Role) *UserUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uuo.AddBindingIDs(ids...)
+	return uuo.AddRoleIDs(ids...)
 }
 
 // SetBelongID sets the "belong" edge to the Tenant entity by ID.
@@ -747,25 +747,25 @@ func (uuo *UserUpdateOne) RemovePolicys(a ...*AuthzPolicy) *UserUpdateOne {
 	return uuo.RemovePolicyIDs(ids...)
 }
 
-// ClearBindings clears all "bindings" edges to the BindUserRole entity.
-func (uuo *UserUpdateOne) ClearBindings() *UserUpdateOne {
-	uuo.mutation.ClearBindings()
+// ClearRoles clears all "roles" edges to the Role entity.
+func (uuo *UserUpdateOne) ClearRoles() *UserUpdateOne {
+	uuo.mutation.ClearRoles()
 	return uuo
 }
 
-// RemoveBindingIDs removes the "bindings" edge to BindUserRole entities by IDs.
-func (uuo *UserUpdateOne) RemoveBindingIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveBindingIDs(ids...)
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (uuo *UserUpdateOne) RemoveRoleIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveRoleIDs(ids...)
 	return uuo
 }
 
-// RemoveBindings removes "bindings" edges to BindUserRole entities.
-func (uuo *UserUpdateOne) RemoveBindings(b ...*BindUserRole) *UserUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// RemoveRoles removes "roles" edges to Role entities.
+func (uuo *UserUpdateOne) RemoveRoles(r ...*Role) *UserUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uuo.RemoveBindingIDs(ids...)
+	return uuo.RemoveRoleIDs(ids...)
 }
 
 // ClearBelong clears the "belong" edge to the Tenant entity.
@@ -1033,33 +1033,33 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.BindingsCleared() {
+	if uuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedBindingsIDs(); len(nodes) > 0 && !uuo.mutation.BindingsCleared() {
+	if nodes := uuo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -1068,17 +1068,17 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}

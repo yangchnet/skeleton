@@ -17,7 +17,15 @@ import (
 )
 
 // ProviderSet provided NewData and NewEnt.
-var ProviderSet = wire.NewSet(NewEnt, NewCache, NewData)
+var ProviderSet = wire.NewSet(
+	NewEnt,
+	NewCache,
+	NewUserRepo,
+	NewRoleRepo,
+	NewBindRepo,
+	NewTenantRepo,
+	NewPolicyRepo,
+)
 
 // NewEnt create an ent client.
 func NewEnt(ctx context.Context, c *conf.Bootstrap) (*ent.Client, error) {
@@ -66,10 +74,50 @@ type Data struct {
 	cache cache.CacheInterface
 }
 
-var _ biz.IamRepo = (*Data)(nil)
+// var _ biz.UserRepo = (*Data)(nil)
 
-// NewData creates a new data which is a biz.EchoRepo.
-func NewData(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.IamRepo {
+// var _ biz.BindRepo = (*Data)(nil)
+
+// var _ biz.RoleRepo = (*Data)(nil)
+
+// var _ biz.TenantRepo = (*Data)(nil)
+
+// var _ biz.PolicyRepo = (*Data)(nil)
+
+// NewUserRepo creates a new data which is a biz.UserRepo.
+func NewUserRepo(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.UserRepo {
+	return &Data{
+		db:    ec,
+		cache: cache,
+	}
+}
+
+// NewRoleRepo creates a new data which is a biz.RoleRepo.
+func NewRoleRepo(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.RoleRepo {
+	return &Data{
+		db:    ec,
+		cache: cache,
+	}
+}
+
+// NewBindRepo creates a new data which is a biz.BindRepo.
+func NewBindRepo(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.BindRepo {
+	return &Data{
+		db:    ec,
+		cache: cache,
+	}
+}
+
+// NewTenantRepo creates a new data which is a biz.TenantRepo.
+func NewTenantRepo(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.TenantRepo {
+	return &Data{
+		db:    ec,
+		cache: cache,
+	}
+}
+
+// NewPolicyRepo creates a new data which is a biz.PolicyRepo.
+func NewPolicyRepo(ctx context.Context, ec *ent.Client, cache cache.CacheInterface) biz.PolicyRepo {
 	return &Data{
 		db:    ec,
 		cache: cache,

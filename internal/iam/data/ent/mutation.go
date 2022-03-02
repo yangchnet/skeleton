@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/predicate"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
@@ -28,11 +27,10 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAuthzPolicy  = "AuthzPolicy"
-	TypeBindUserRole = "BindUserRole"
-	TypeRole         = "Role"
-	TypeTenant       = "Tenant"
-	TypeUser         = "User"
+	TypeAuthzPolicy = "AuthzPolicy"
+	TypeRole        = "Role"
+	TypeTenant      = "Tenant"
+	TypeUser        = "User"
 )
 
 // AuthzPolicyMutation represents an operation that mutates the AuthzPolicy nodes in the graph.
@@ -726,646 +724,23 @@ func (m *AuthzPolicyMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown AuthzPolicy edge %s", name)
 }
 
-// BindUserRoleMutation represents an operation that mutates the BindUserRole nodes in the graph.
-type BindUserRoleMutation struct {
+// RoleMutation represents an operation that mutates the Role nodes in the graph.
+type RoleMutation struct {
 	config
 	op            Op
 	typ           string
 	id            *int
-	username      *string
 	rolename      *string
+	status        *string
 	create_time   *time.Time
 	update_time   *time.Time
 	clearedFields map[string]struct{}
-	user          *int
-	cleareduser   bool
-	role          *int
-	clearedrole   bool
+	users         map[int]struct{}
+	removedusers  map[int]struct{}
+	clearedusers  bool
 	done          bool
-	oldValue      func(context.Context) (*BindUserRole, error)
-	predicates    []predicate.BindUserRole
-}
-
-var _ ent.Mutation = (*BindUserRoleMutation)(nil)
-
-// binduserroleOption allows management of the mutation configuration using functional options.
-type binduserroleOption func(*BindUserRoleMutation)
-
-// newBindUserRoleMutation creates new mutation for the BindUserRole entity.
-func newBindUserRoleMutation(c config, op Op, opts ...binduserroleOption) *BindUserRoleMutation {
-	m := &BindUserRoleMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeBindUserRole,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withBindUserRoleID sets the ID field of the mutation.
-func withBindUserRoleID(id int) binduserroleOption {
-	return func(m *BindUserRoleMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *BindUserRole
-		)
-		m.oldValue = func(ctx context.Context) (*BindUserRole, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().BindUserRole.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withBindUserRole sets the old BindUserRole of the mutation.
-func withBindUserRole(node *BindUserRole) binduserroleOption {
-	return func(m *BindUserRoleMutation) {
-		m.oldValue = func(context.Context) (*BindUserRole, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m BindUserRoleMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m BindUserRoleMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *BindUserRoleMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *BindUserRoleMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().BindUserRole.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetUsername sets the "username" field.
-func (m *BindUserRoleMutation) SetUsername(s string) {
-	m.username = &s
-}
-
-// Username returns the value of the "username" field in the mutation.
-func (m *BindUserRoleMutation) Username() (r string, exists bool) {
-	v := m.username
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUsername returns the old "username" field's value of the BindUserRole entity.
-// If the BindUserRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BindUserRoleMutation) OldUsername(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUsername requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
-	}
-	return oldValue.Username, nil
-}
-
-// ResetUsername resets all changes to the "username" field.
-func (m *BindUserRoleMutation) ResetUsername() {
-	m.username = nil
-}
-
-// SetRolename sets the "rolename" field.
-func (m *BindUserRoleMutation) SetRolename(s string) {
-	m.rolename = &s
-}
-
-// Rolename returns the value of the "rolename" field in the mutation.
-func (m *BindUserRoleMutation) Rolename() (r string, exists bool) {
-	v := m.rolename
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRolename returns the old "rolename" field's value of the BindUserRole entity.
-// If the BindUserRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BindUserRoleMutation) OldRolename(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRolename is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRolename requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRolename: %w", err)
-	}
-	return oldValue.Rolename, nil
-}
-
-// ResetRolename resets all changes to the "rolename" field.
-func (m *BindUserRoleMutation) ResetRolename() {
-	m.rolename = nil
-}
-
-// SetCreateTime sets the "create_time" field.
-func (m *BindUserRoleMutation) SetCreateTime(t time.Time) {
-	m.create_time = &t
-}
-
-// CreateTime returns the value of the "create_time" field in the mutation.
-func (m *BindUserRoleMutation) CreateTime() (r time.Time, exists bool) {
-	v := m.create_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreateTime returns the old "create_time" field's value of the BindUserRole entity.
-// If the BindUserRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BindUserRoleMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
-	}
-	return oldValue.CreateTime, nil
-}
-
-// ResetCreateTime resets all changes to the "create_time" field.
-func (m *BindUserRoleMutation) ResetCreateTime() {
-	m.create_time = nil
-}
-
-// SetUpdateTime sets the "update_time" field.
-func (m *BindUserRoleMutation) SetUpdateTime(t time.Time) {
-	m.update_time = &t
-}
-
-// UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *BindUserRoleMutation) UpdateTime() (r time.Time, exists bool) {
-	v := m.update_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdateTime returns the old "update_time" field's value of the BindUserRole entity.
-// If the BindUserRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BindUserRoleMutation) OldUpdateTime(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
-	}
-	return oldValue.UpdateTime, nil
-}
-
-// ClearUpdateTime clears the value of the "update_time" field.
-func (m *BindUserRoleMutation) ClearUpdateTime() {
-	m.update_time = nil
-	m.clearedFields[binduserrole.FieldUpdateTime] = struct{}{}
-}
-
-// UpdateTimeCleared returns if the "update_time" field was cleared in this mutation.
-func (m *BindUserRoleMutation) UpdateTimeCleared() bool {
-	_, ok := m.clearedFields[binduserrole.FieldUpdateTime]
-	return ok
-}
-
-// ResetUpdateTime resets all changes to the "update_time" field.
-func (m *BindUserRoleMutation) ResetUpdateTime() {
-	m.update_time = nil
-	delete(m.clearedFields, binduserrole.FieldUpdateTime)
-}
-
-// SetUserID sets the "user" edge to the User entity by id.
-func (m *BindUserRoleMutation) SetUserID(id int) {
-	m.user = &id
-}
-
-// ClearUser clears the "user" edge to the User entity.
-func (m *BindUserRoleMutation) ClearUser() {
-	m.cleareduser = true
-}
-
-// UserCleared reports if the "user" edge to the User entity was cleared.
-func (m *BindUserRoleMutation) UserCleared() bool {
-	return m.cleareduser
-}
-
-// UserID returns the "user" edge ID in the mutation.
-func (m *BindUserRoleMutation) UserID() (id int, exists bool) {
-	if m.user != nil {
-		return *m.user, true
-	}
-	return
-}
-
-// UserIDs returns the "user" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// UserID instead. It exists only for internal usage by the builders.
-func (m *BindUserRoleMutation) UserIDs() (ids []int) {
-	if id := m.user; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetUser resets all changes to the "user" edge.
-func (m *BindUserRoleMutation) ResetUser() {
-	m.user = nil
-	m.cleareduser = false
-}
-
-// SetRoleID sets the "role" edge to the Role entity by id.
-func (m *BindUserRoleMutation) SetRoleID(id int) {
-	m.role = &id
-}
-
-// ClearRole clears the "role" edge to the Role entity.
-func (m *BindUserRoleMutation) ClearRole() {
-	m.clearedrole = true
-}
-
-// RoleCleared reports if the "role" edge to the Role entity was cleared.
-func (m *BindUserRoleMutation) RoleCleared() bool {
-	return m.clearedrole
-}
-
-// RoleID returns the "role" edge ID in the mutation.
-func (m *BindUserRoleMutation) RoleID() (id int, exists bool) {
-	if m.role != nil {
-		return *m.role, true
-	}
-	return
-}
-
-// RoleIDs returns the "role" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// RoleID instead. It exists only for internal usage by the builders.
-func (m *BindUserRoleMutation) RoleIDs() (ids []int) {
-	if id := m.role; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetRole resets all changes to the "role" edge.
-func (m *BindUserRoleMutation) ResetRole() {
-	m.role = nil
-	m.clearedrole = false
-}
-
-// Where appends a list predicates to the BindUserRoleMutation builder.
-func (m *BindUserRoleMutation) Where(ps ...predicate.BindUserRole) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// Op returns the operation name.
-func (m *BindUserRoleMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (BindUserRole).
-func (m *BindUserRoleMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *BindUserRoleMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.username != nil {
-		fields = append(fields, binduserrole.FieldUsername)
-	}
-	if m.rolename != nil {
-		fields = append(fields, binduserrole.FieldRolename)
-	}
-	if m.create_time != nil {
-		fields = append(fields, binduserrole.FieldCreateTime)
-	}
-	if m.update_time != nil {
-		fields = append(fields, binduserrole.FieldUpdateTime)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *BindUserRoleMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case binduserrole.FieldUsername:
-		return m.Username()
-	case binduserrole.FieldRolename:
-		return m.Rolename()
-	case binduserrole.FieldCreateTime:
-		return m.CreateTime()
-	case binduserrole.FieldUpdateTime:
-		return m.UpdateTime()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *BindUserRoleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case binduserrole.FieldUsername:
-		return m.OldUsername(ctx)
-	case binduserrole.FieldRolename:
-		return m.OldRolename(ctx)
-	case binduserrole.FieldCreateTime:
-		return m.OldCreateTime(ctx)
-	case binduserrole.FieldUpdateTime:
-		return m.OldUpdateTime(ctx)
-	}
-	return nil, fmt.Errorf("unknown BindUserRole field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BindUserRoleMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case binduserrole.FieldUsername:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUsername(v)
-		return nil
-	case binduserrole.FieldRolename:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRolename(v)
-		return nil
-	case binduserrole.FieldCreateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreateTime(v)
-		return nil
-	case binduserrole.FieldUpdateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdateTime(v)
-		return nil
-	}
-	return fmt.Errorf("unknown BindUserRole field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *BindUserRoleMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *BindUserRoleMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BindUserRoleMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown BindUserRole numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *BindUserRoleMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(binduserrole.FieldUpdateTime) {
-		fields = append(fields, binduserrole.FieldUpdateTime)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *BindUserRoleMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *BindUserRoleMutation) ClearField(name string) error {
-	switch name {
-	case binduserrole.FieldUpdateTime:
-		m.ClearUpdateTime()
-		return nil
-	}
-	return fmt.Errorf("unknown BindUserRole nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *BindUserRoleMutation) ResetField(name string) error {
-	switch name {
-	case binduserrole.FieldUsername:
-		m.ResetUsername()
-		return nil
-	case binduserrole.FieldRolename:
-		m.ResetRolename()
-		return nil
-	case binduserrole.FieldCreateTime:
-		m.ResetCreateTime()
-		return nil
-	case binduserrole.FieldUpdateTime:
-		m.ResetUpdateTime()
-		return nil
-	}
-	return fmt.Errorf("unknown BindUserRole field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *BindUserRoleMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.user != nil {
-		edges = append(edges, binduserrole.EdgeUser)
-	}
-	if m.role != nil {
-		edges = append(edges, binduserrole.EdgeRole)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *BindUserRoleMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case binduserrole.EdgeUser:
-		if id := m.user; id != nil {
-			return []ent.Value{*id}
-		}
-	case binduserrole.EdgeRole:
-		if id := m.role; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *BindUserRoleMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *BindUserRoleMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *BindUserRoleMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.cleareduser {
-		edges = append(edges, binduserrole.EdgeUser)
-	}
-	if m.clearedrole {
-		edges = append(edges, binduserrole.EdgeRole)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *BindUserRoleMutation) EdgeCleared(name string) bool {
-	switch name {
-	case binduserrole.EdgeUser:
-		return m.cleareduser
-	case binduserrole.EdgeRole:
-		return m.clearedrole
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *BindUserRoleMutation) ClearEdge(name string) error {
-	switch name {
-	case binduserrole.EdgeUser:
-		m.ClearUser()
-		return nil
-	case binduserrole.EdgeRole:
-		m.ClearRole()
-		return nil
-	}
-	return fmt.Errorf("unknown BindUserRole unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *BindUserRoleMutation) ResetEdge(name string) error {
-	switch name {
-	case binduserrole.EdgeUser:
-		m.ResetUser()
-		return nil
-	case binduserrole.EdgeRole:
-		m.ResetRole()
-		return nil
-	}
-	return fmt.Errorf("unknown BindUserRole edge %s", name)
-}
-
-// RoleMutation represents an operation that mutates the Role nodes in the graph.
-type RoleMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *int
-	rolename        *string
-	status          *string
-	create_time     *time.Time
-	update_time     *time.Time
-	clearedFields   map[string]struct{}
-	bindings        map[int]struct{}
-	removedbindings map[int]struct{}
-	clearedbindings bool
-	done            bool
-	oldValue        func(context.Context) (*Role, error)
-	predicates      []predicate.Role
+	oldValue      func(context.Context) (*Role, error)
+	predicates    []predicate.Role
 }
 
 var _ ent.Mutation = (*RoleMutation)(nil)
@@ -1623,58 +998,58 @@ func (m *RoleMutation) ResetUpdateTime() {
 	delete(m.clearedFields, role.FieldUpdateTime)
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by ids.
-func (m *RoleMutation) AddBindingIDs(ids ...int) {
-	if m.bindings == nil {
-		m.bindings = make(map[int]struct{})
+// AddUserIDs adds the "users" edge to the User entity by ids.
+func (m *RoleMutation) AddUserIDs(ids ...int) {
+	if m.users == nil {
+		m.users = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.bindings[ids[i]] = struct{}{}
+		m.users[ids[i]] = struct{}{}
 	}
 }
 
-// ClearBindings clears the "bindings" edge to the BindUserRole entity.
-func (m *RoleMutation) ClearBindings() {
-	m.clearedbindings = true
+// ClearUsers clears the "users" edge to the User entity.
+func (m *RoleMutation) ClearUsers() {
+	m.clearedusers = true
 }
 
-// BindingsCleared reports if the "bindings" edge to the BindUserRole entity was cleared.
-func (m *RoleMutation) BindingsCleared() bool {
-	return m.clearedbindings
+// UsersCleared reports if the "users" edge to the User entity was cleared.
+func (m *RoleMutation) UsersCleared() bool {
+	return m.clearedusers
 }
 
-// RemoveBindingIDs removes the "bindings" edge to the BindUserRole entity by IDs.
-func (m *RoleMutation) RemoveBindingIDs(ids ...int) {
-	if m.removedbindings == nil {
-		m.removedbindings = make(map[int]struct{})
+// RemoveUserIDs removes the "users" edge to the User entity by IDs.
+func (m *RoleMutation) RemoveUserIDs(ids ...int) {
+	if m.removedusers == nil {
+		m.removedusers = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.bindings, ids[i])
-		m.removedbindings[ids[i]] = struct{}{}
+		delete(m.users, ids[i])
+		m.removedusers[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedBindings returns the removed IDs of the "bindings" edge to the BindUserRole entity.
-func (m *RoleMutation) RemovedBindingsIDs() (ids []int) {
-	for id := range m.removedbindings {
+// RemovedUsers returns the removed IDs of the "users" edge to the User entity.
+func (m *RoleMutation) RemovedUsersIDs() (ids []int) {
+	for id := range m.removedusers {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// BindingsIDs returns the "bindings" edge IDs in the mutation.
-func (m *RoleMutation) BindingsIDs() (ids []int) {
-	for id := range m.bindings {
+// UsersIDs returns the "users" edge IDs in the mutation.
+func (m *RoleMutation) UsersIDs() (ids []int) {
+	for id := range m.users {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetBindings resets all changes to the "bindings" edge.
-func (m *RoleMutation) ResetBindings() {
-	m.bindings = nil
-	m.clearedbindings = false
-	m.removedbindings = nil
+// ResetUsers resets all changes to the "users" edge.
+func (m *RoleMutation) ResetUsers() {
+	m.users = nil
+	m.clearedusers = false
+	m.removedusers = nil
 }
 
 // Where appends a list predicates to the RoleMutation builder.
@@ -1856,8 +1231,8 @@ func (m *RoleMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *RoleMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.bindings != nil {
-		edges = append(edges, role.EdgeBindings)
+	if m.users != nil {
+		edges = append(edges, role.EdgeUsers)
 	}
 	return edges
 }
@@ -1866,9 +1241,9 @@ func (m *RoleMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *RoleMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case role.EdgeBindings:
-		ids := make([]ent.Value, 0, len(m.bindings))
-		for id := range m.bindings {
+	case role.EdgeUsers:
+		ids := make([]ent.Value, 0, len(m.users))
+		for id := range m.users {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1879,8 +1254,8 @@ func (m *RoleMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RoleMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedbindings != nil {
-		edges = append(edges, role.EdgeBindings)
+	if m.removedusers != nil {
+		edges = append(edges, role.EdgeUsers)
 	}
 	return edges
 }
@@ -1889,9 +1264,9 @@ func (m *RoleMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *RoleMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case role.EdgeBindings:
-		ids := make([]ent.Value, 0, len(m.removedbindings))
-		for id := range m.removedbindings {
+	case role.EdgeUsers:
+		ids := make([]ent.Value, 0, len(m.removedusers))
+		for id := range m.removedusers {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1902,8 +1277,8 @@ func (m *RoleMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *RoleMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.clearedbindings {
-		edges = append(edges, role.EdgeBindings)
+	if m.clearedusers {
+		edges = append(edges, role.EdgeUsers)
 	}
 	return edges
 }
@@ -1912,8 +1287,8 @@ func (m *RoleMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *RoleMutation) EdgeCleared(name string) bool {
 	switch name {
-	case role.EdgeBindings:
-		return m.clearedbindings
+	case role.EdgeUsers:
+		return m.clearedusers
 	}
 	return false
 }
@@ -1930,8 +1305,8 @@ func (m *RoleMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *RoleMutation) ResetEdge(name string) error {
 	switch name {
-	case role.EdgeBindings:
-		m.ResetBindings()
+	case role.EdgeUsers:
+		m.ResetUsers()
 		return nil
 	}
 	return fmt.Errorf("unknown Role edge %s", name)
@@ -2528,29 +1903,29 @@ func (m *TenantMutation) ResetEdge(name string) error {
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	username        *string
-	tenant_name     *string
-	passwd          *string
-	phone           *string
-	email           *string
-	status          *string
-	create_time     *time.Time
-	update_time     *time.Time
-	clearedFields   map[string]struct{}
-	policys         map[int]struct{}
-	removedpolicys  map[int]struct{}
-	clearedpolicys  bool
-	bindings        map[int]struct{}
-	removedbindings map[int]struct{}
-	clearedbindings bool
-	belong          *int
-	clearedbelong   bool
-	done            bool
-	oldValue        func(context.Context) (*User, error)
-	predicates      []predicate.User
+	op             Op
+	typ            string
+	id             *int
+	username       *string
+	tenant_name    *string
+	passwd         *string
+	phone          *string
+	email          *string
+	status         *string
+	create_time    *time.Time
+	update_time    *time.Time
+	clearedFields  map[string]struct{}
+	policys        map[int]struct{}
+	removedpolicys map[int]struct{}
+	clearedpolicys bool
+	roles          map[int]struct{}
+	removedroles   map[int]struct{}
+	clearedroles   bool
+	belong         *int
+	clearedbelong  bool
+	done           bool
+	oldValue       func(context.Context) (*User, error)
+	predicates     []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -3045,58 +2420,58 @@ func (m *UserMutation) ResetPolicys() {
 	m.removedpolicys = nil
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by ids.
-func (m *UserMutation) AddBindingIDs(ids ...int) {
-	if m.bindings == nil {
-		m.bindings = make(map[int]struct{})
+// AddRoleIDs adds the "roles" edge to the Role entity by ids.
+func (m *UserMutation) AddRoleIDs(ids ...int) {
+	if m.roles == nil {
+		m.roles = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.bindings[ids[i]] = struct{}{}
+		m.roles[ids[i]] = struct{}{}
 	}
 }
 
-// ClearBindings clears the "bindings" edge to the BindUserRole entity.
-func (m *UserMutation) ClearBindings() {
-	m.clearedbindings = true
+// ClearRoles clears the "roles" edge to the Role entity.
+func (m *UserMutation) ClearRoles() {
+	m.clearedroles = true
 }
 
-// BindingsCleared reports if the "bindings" edge to the BindUserRole entity was cleared.
-func (m *UserMutation) BindingsCleared() bool {
-	return m.clearedbindings
+// RolesCleared reports if the "roles" edge to the Role entity was cleared.
+func (m *UserMutation) RolesCleared() bool {
+	return m.clearedroles
 }
 
-// RemoveBindingIDs removes the "bindings" edge to the BindUserRole entity by IDs.
-func (m *UserMutation) RemoveBindingIDs(ids ...int) {
-	if m.removedbindings == nil {
-		m.removedbindings = make(map[int]struct{})
+// RemoveRoleIDs removes the "roles" edge to the Role entity by IDs.
+func (m *UserMutation) RemoveRoleIDs(ids ...int) {
+	if m.removedroles == nil {
+		m.removedroles = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.bindings, ids[i])
-		m.removedbindings[ids[i]] = struct{}{}
+		delete(m.roles, ids[i])
+		m.removedroles[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedBindings returns the removed IDs of the "bindings" edge to the BindUserRole entity.
-func (m *UserMutation) RemovedBindingsIDs() (ids []int) {
-	for id := range m.removedbindings {
+// RemovedRoles returns the removed IDs of the "roles" edge to the Role entity.
+func (m *UserMutation) RemovedRolesIDs() (ids []int) {
+	for id := range m.removedroles {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// BindingsIDs returns the "bindings" edge IDs in the mutation.
-func (m *UserMutation) BindingsIDs() (ids []int) {
-	for id := range m.bindings {
+// RolesIDs returns the "roles" edge IDs in the mutation.
+func (m *UserMutation) RolesIDs() (ids []int) {
+	for id := range m.roles {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetBindings resets all changes to the "bindings" edge.
-func (m *UserMutation) ResetBindings() {
-	m.bindings = nil
-	m.clearedbindings = false
-	m.removedbindings = nil
+// ResetRoles resets all changes to the "roles" edge.
+func (m *UserMutation) ResetRoles() {
+	m.roles = nil
+	m.clearedroles = false
+	m.removedroles = nil
 }
 
 // SetBelongID sets the "belong" edge to the Tenant entity by id.
@@ -3406,8 +2781,8 @@ func (m *UserMutation) AddedEdges() []string {
 	if m.policys != nil {
 		edges = append(edges, user.EdgePolicys)
 	}
-	if m.bindings != nil {
-		edges = append(edges, user.EdgeBindings)
+	if m.roles != nil {
+		edges = append(edges, user.EdgeRoles)
 	}
 	if m.belong != nil {
 		edges = append(edges, user.EdgeBelong)
@@ -3425,9 +2800,9 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeBindings:
-		ids := make([]ent.Value, 0, len(m.bindings))
-		for id := range m.bindings {
+	case user.EdgeRoles:
+		ids := make([]ent.Value, 0, len(m.roles))
+		for id := range m.roles {
 			ids = append(ids, id)
 		}
 		return ids
@@ -3445,8 +2820,8 @@ func (m *UserMutation) RemovedEdges() []string {
 	if m.removedpolicys != nil {
 		edges = append(edges, user.EdgePolicys)
 	}
-	if m.removedbindings != nil {
-		edges = append(edges, user.EdgeBindings)
+	if m.removedroles != nil {
+		edges = append(edges, user.EdgeRoles)
 	}
 	return edges
 }
@@ -3461,9 +2836,9 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeBindings:
-		ids := make([]ent.Value, 0, len(m.removedbindings))
-		for id := range m.removedbindings {
+	case user.EdgeRoles:
+		ids := make([]ent.Value, 0, len(m.removedroles))
+		for id := range m.removedroles {
 			ids = append(ids, id)
 		}
 		return ids
@@ -3477,8 +2852,8 @@ func (m *UserMutation) ClearedEdges() []string {
 	if m.clearedpolicys {
 		edges = append(edges, user.EdgePolicys)
 	}
-	if m.clearedbindings {
-		edges = append(edges, user.EdgeBindings)
+	if m.clearedroles {
+		edges = append(edges, user.EdgeRoles)
 	}
 	if m.clearedbelong {
 		edges = append(edges, user.EdgeBelong)
@@ -3492,8 +2867,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 	switch name {
 	case user.EdgePolicys:
 		return m.clearedpolicys
-	case user.EdgeBindings:
-		return m.clearedbindings
+	case user.EdgeRoles:
+		return m.clearedroles
 	case user.EdgeBelong:
 		return m.clearedbelong
 	}
@@ -3518,8 +2893,8 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgePolicys:
 		m.ResetPolicys()
 		return nil
-	case user.EdgeBindings:
-		m.ResetBindings()
+	case user.EdgeRoles:
+		m.ResetRoles()
 		return nil
 	case user.EdgeBelong:
 		m.ResetBelong()

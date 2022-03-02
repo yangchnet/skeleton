@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
@@ -33,11 +32,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		authzpolicy.Table:  authzpolicy.ValidColumn,
-		binduserrole.Table: binduserrole.ValidColumn,
-		role.Table:         role.ValidColumn,
-		tenant.Table:       tenant.ValidColumn,
-		user.Table:         user.ValidColumn,
+		authzpolicy.Table: authzpolicy.ValidColumn,
+		role.Table:        role.ValidColumn,
+		tenant.Table:      tenant.ValidColumn,
+		user.Table:        user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

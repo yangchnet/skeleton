@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/yangchnet/skeleton/pkg/logger"
 	"github.com/yangchnet/skeleton/tools/passwd"
 )
 
@@ -28,10 +29,15 @@ func (u *IamCase) Token(ctx context.Context, user *User) (*Token, error) {
 func (u *IamCase) CreateUser(ctx context.Context, user *User) (*User, error) {
 	hashedPasswd, err := passwd.HashPassword(user.Password)
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
 	user.Password = hashedPasswd
 
-	return u.repo.CreateUser(ctx, user)
+	return u.userRepo.CreateUser(ctx, user)
+}
+
+func (u *IamCase) GetRolesByUsername(ctx context.Context, username string) ([]*Role, error) {
+	return u.userRepo.Roles(ctx, username)
 }

@@ -23,6 +23,59 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type CanDoRequest_Action int32
+
+const (
+	CanDoRequest_CREATE CanDoRequest_Action = 0
+	CanDoRequest_UPDATE CanDoRequest_Action = 1
+	CanDoRequest_DELETE CanDoRequest_Action = 2
+	CanDoRequest_READ   CanDoRequest_Action = 3
+)
+
+// Enum value maps for CanDoRequest_Action.
+var (
+	CanDoRequest_Action_name = map[int32]string{
+		0: "CREATE",
+		1: "UPDATE",
+		2: "DELETE",
+		3: "READ",
+	}
+	CanDoRequest_Action_value = map[string]int32{
+		"CREATE": 0,
+		"UPDATE": 1,
+		"DELETE": 2,
+		"READ":   3,
+	}
+)
+
+func (x CanDoRequest_Action) Enum() *CanDoRequest_Action {
+	p := new(CanDoRequest_Action)
+	*p = x
+	return p
+}
+
+func (x CanDoRequest_Action) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CanDoRequest_Action) Descriptor() protoreflect.EnumDescriptor {
+	return file_iam_v1_message_proto_enumTypes[0].Descriptor()
+}
+
+func (CanDoRequest_Action) Type() protoreflect.EnumType {
+	return &file_iam_v1_message_proto_enumTypes[0]
+}
+
+func (x CanDoRequest_Action) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CanDoRequest_Action.Descriptor instead.
+func (CanDoRequest_Action) EnumDescriptor() ([]byte, []int) {
+	return file_iam_v1_message_proto_rawDescGZIP(), []int{40, 0}
+}
+
+// ====================================================================
 // Token
 type LoginRequest struct {
 	state         protoimpl.MessageState
@@ -580,6 +633,7 @@ func (*GetUserResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{11}
 }
 
+// ====================================================================
 // Role Manage
 type CreateRoleRequest struct {
 	state         protoimpl.MessageState
@@ -885,6 +939,7 @@ func (*DeleteRoleResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{19}
 }
 
+// ====================================================================
 // Tenant Manage
 type CreateTenantRequest struct {
 	state         protoimpl.MessageState
@@ -1190,6 +1245,7 @@ func (*GetTenantResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{27}
 }
 
+// ====================================================================
 // Binding Manage
 type CreateBindingRequest struct {
 	state         protoimpl.MessageState
@@ -1495,6 +1551,7 @@ func (*GetBindingResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{35}
 }
 
+// ====================================================================
 // Policy Manage
 type CreatePolicyRequest struct {
 	state         protoimpl.MessageState
@@ -1648,11 +1705,15 @@ func (*DeletePolicyResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{39}
 }
 
+// ====================================================================
 // CanDo
 type CanDoRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
+	Action   string `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (x *CanDoRequest) Reset() {
@@ -1687,10 +1748,26 @@ func (*CanDoRequest) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{40}
 }
 
+func (x *CanDoRequest) GetResource() string {
+	if x != nil {
+		return x.Resource
+	}
+	return ""
+}
+
+func (x *CanDoRequest) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
 type CanDoResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Allowed bool `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
 }
 
 func (x *CanDoResponse) Reset() {
@@ -1723,6 +1800,13 @@ func (x *CanDoResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CanDoResponse.ProtoReflect.Descriptor instead.
 func (*CanDoResponse) Descriptor() ([]byte, []int) {
 	return file_iam_v1_message_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *CanDoResponse) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
 }
 
 var File_iam_v1_message_proto protoreflect.FileDescriptor
@@ -1819,12 +1903,20 @@ var file_iam_v1_message_proto_rawDesc = []byte{
 	0x73, 0x65, 0x22, 0x15, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x6f, 0x6c, 0x69,
 	0x63, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x16, 0x0a, 0x14, 0x44, 0x65, 0x6c,
 	0x65, 0x74, 0x65, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x0e, 0x0a, 0x0c, 0x43, 0x61, 0x6e, 0x44, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x22, 0x0f, 0x0a, 0x0d, 0x43, 0x61, 0x6e, 0x44, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x79, 0x61, 0x6e, 0x67, 0x63, 0x68, 0x6e, 0x65, 0x74, 0x2f, 0x73, 0x6b, 0x65, 0x6c, 0x65,
-	0x74, 0x6f, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x69, 0x61, 0x6d, 0x2f, 0x76, 0x31, 0x3b, 0x76,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x22, 0x7a, 0x0a, 0x0c, 0x43, 0x61, 0x6e, 0x44, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x16, 0x0a,
+	0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x36, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x0a, 0x0a, 0x06, 0x43, 0x52, 0x45, 0x41, 0x54, 0x45, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x55,
+	0x50, 0x44, 0x41, 0x54, 0x45, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x45, 0x4c, 0x45, 0x54,
+	0x45, 0x10, 0x02, 0x12, 0x08, 0x0a, 0x04, 0x52, 0x45, 0x41, 0x44, 0x10, 0x03, 0x22, 0x29, 0x0a,
+	0x0d, 0x43, 0x61, 0x6e, 0x44, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x07, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x79, 0x61, 0x6e, 0x67, 0x63, 0x68, 0x6e, 0x65, 0x74,
+	0x2f, 0x73, 0x6b, 0x65, 0x6c, 0x65, 0x74, 0x6f, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x69, 0x61,
+	0x6d, 0x2f, 0x76, 0x31, 0x3b, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1839,61 +1931,63 @@ func file_iam_v1_message_proto_rawDescGZIP() []byte {
 	return file_iam_v1_message_proto_rawDescData
 }
 
+var file_iam_v1_message_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_iam_v1_message_proto_msgTypes = make([]protoimpl.MessageInfo, 42)
 var file_iam_v1_message_proto_goTypes = []interface{}{
-	(*LoginRequest)(nil),           // 0: iam.v1.LoginRequest
-	(*LoginResponse)(nil),          // 1: iam.v1.LoginResponse
-	(*RefreshTokenRequest)(nil),    // 2: iam.v1.RefreshTokenRequest
-	(*RefreshTokenResponse)(nil),   // 3: iam.v1.RefreshTokenResponse
-	(*CreateUserRequest)(nil),      // 4: iam.v1.CreateUserRequest
-	(*CreateUserResponse)(nil),     // 5: iam.v1.CreateUserResponse
-	(*DeleteUserRequest)(nil),      // 6: iam.v1.DeleteUserRequest
-	(*DeleteUserResponse)(nil),     // 7: iam.v1.DeleteUserResponse
-	(*UpdateUserRequest)(nil),      // 8: iam.v1.UpdateUserRequest
-	(*UpdateUserResponse)(nil),     // 9: iam.v1.UpdateUserResponse
-	(*GetUserRequest)(nil),         // 10: iam.v1.GetUserRequest
-	(*GetUserResponse)(nil),        // 11: iam.v1.GetUserResponse
-	(*CreateRoleRequest)(nil),      // 12: iam.v1.CreateRoleRequest
-	(*CreateRoleResponse)(nil),     // 13: iam.v1.CreateRoleResponse
-	(*UpdateRoleRequest)(nil),      // 14: iam.v1.UpdateRoleRequest
-	(*UpdateRoleResponse)(nil),     // 15: iam.v1.UpdateRoleResponse
-	(*GetRoleRequest)(nil),         // 16: iam.v1.GetRoleRequest
-	(*GetRoleResponse)(nil),        // 17: iam.v1.GetRoleResponse
-	(*DeleteRoleRequest)(nil),      // 18: iam.v1.DeleteRoleRequest
-	(*DeleteRoleResponse)(nil),     // 19: iam.v1.DeleteRoleResponse
-	(*CreateTenantRequest)(nil),    // 20: iam.v1.CreateTenantRequest
-	(*CreateTenantResponse)(nil),   // 21: iam.v1.CreateTenantResponse
-	(*DeleteTenantRequest)(nil),    // 22: iam.v1.DeleteTenantRequest
-	(*DeleteTenantResponse)(nil),   // 23: iam.v1.DeleteTenantResponse
-	(*UpdateTenantRequest)(nil),    // 24: iam.v1.UpdateTenantRequest
-	(*UpdateTenantResponse)(nil),   // 25: iam.v1.UpdateTenantResponse
-	(*GetTenantRequest)(nil),       // 26: iam.v1.GetTenantRequest
-	(*GetTenantResponse)(nil),      // 27: iam.v1.GetTenantResponse
-	(*CreateBindingRequest)(nil),   // 28: iam.v1.CreateBindingRequest
-	(*CreateBindingResponse)(nil),  // 29: iam.v1.CreateBindingResponse
-	(*UpdateBindingRequest)(nil),   // 30: iam.v1.UpdateBindingRequest
-	(*UpdateBindingResponse)(nil),  // 31: iam.v1.UpdateBindingResponse
-	(*DeleteBindingRequest)(nil),   // 32: iam.v1.DeleteBindingRequest
-	(*DeleteBindingResponse)(nil),  // 33: iam.v1.DeleteBindingResponse
-	(*GetBindingRequest)(nil),      // 34: iam.v1.GetBindingRequest
-	(*GetBindingResponse)(nil),     // 35: iam.v1.GetBindingResponse
-	(*CreatePolicyRequest)(nil),    // 36: iam.v1.CreatePolicyRequest
-	(*CreatePolicyResponse)(nil),   // 37: iam.v1.CreatePolicyResponse
-	(*DeletePolicyRequest)(nil),    // 38: iam.v1.DeletePolicyRequest
-	(*DeletePolicyResponse)(nil),   // 39: iam.v1.DeletePolicyResponse
-	(*CanDoRequest)(nil),           // 40: iam.v1.CanDoRequest
-	(*CanDoResponse)(nil),          // 41: iam.v1.CanDoResponse
-	(*durationpb.Duration)(nil),    // 42: google.protobuf.Duration
-	(*wrapperspb.StringValue)(nil), // 43: google.protobuf.StringValue
-	(common.OperationResult)(0),    // 44: common.OperationResult
+	(CanDoRequest_Action)(0),       // 0: iam.v1.CanDoRequest.Action
+	(*LoginRequest)(nil),           // 1: iam.v1.LoginRequest
+	(*LoginResponse)(nil),          // 2: iam.v1.LoginResponse
+	(*RefreshTokenRequest)(nil),    // 3: iam.v1.RefreshTokenRequest
+	(*RefreshTokenResponse)(nil),   // 4: iam.v1.RefreshTokenResponse
+	(*CreateUserRequest)(nil),      // 5: iam.v1.CreateUserRequest
+	(*CreateUserResponse)(nil),     // 6: iam.v1.CreateUserResponse
+	(*DeleteUserRequest)(nil),      // 7: iam.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),     // 8: iam.v1.DeleteUserResponse
+	(*UpdateUserRequest)(nil),      // 9: iam.v1.UpdateUserRequest
+	(*UpdateUserResponse)(nil),     // 10: iam.v1.UpdateUserResponse
+	(*GetUserRequest)(nil),         // 11: iam.v1.GetUserRequest
+	(*GetUserResponse)(nil),        // 12: iam.v1.GetUserResponse
+	(*CreateRoleRequest)(nil),      // 13: iam.v1.CreateRoleRequest
+	(*CreateRoleResponse)(nil),     // 14: iam.v1.CreateRoleResponse
+	(*UpdateRoleRequest)(nil),      // 15: iam.v1.UpdateRoleRequest
+	(*UpdateRoleResponse)(nil),     // 16: iam.v1.UpdateRoleResponse
+	(*GetRoleRequest)(nil),         // 17: iam.v1.GetRoleRequest
+	(*GetRoleResponse)(nil),        // 18: iam.v1.GetRoleResponse
+	(*DeleteRoleRequest)(nil),      // 19: iam.v1.DeleteRoleRequest
+	(*DeleteRoleResponse)(nil),     // 20: iam.v1.DeleteRoleResponse
+	(*CreateTenantRequest)(nil),    // 21: iam.v1.CreateTenantRequest
+	(*CreateTenantResponse)(nil),   // 22: iam.v1.CreateTenantResponse
+	(*DeleteTenantRequest)(nil),    // 23: iam.v1.DeleteTenantRequest
+	(*DeleteTenantResponse)(nil),   // 24: iam.v1.DeleteTenantResponse
+	(*UpdateTenantRequest)(nil),    // 25: iam.v1.UpdateTenantRequest
+	(*UpdateTenantResponse)(nil),   // 26: iam.v1.UpdateTenantResponse
+	(*GetTenantRequest)(nil),       // 27: iam.v1.GetTenantRequest
+	(*GetTenantResponse)(nil),      // 28: iam.v1.GetTenantResponse
+	(*CreateBindingRequest)(nil),   // 29: iam.v1.CreateBindingRequest
+	(*CreateBindingResponse)(nil),  // 30: iam.v1.CreateBindingResponse
+	(*UpdateBindingRequest)(nil),   // 31: iam.v1.UpdateBindingRequest
+	(*UpdateBindingResponse)(nil),  // 32: iam.v1.UpdateBindingResponse
+	(*DeleteBindingRequest)(nil),   // 33: iam.v1.DeleteBindingRequest
+	(*DeleteBindingResponse)(nil),  // 34: iam.v1.DeleteBindingResponse
+	(*GetBindingRequest)(nil),      // 35: iam.v1.GetBindingRequest
+	(*GetBindingResponse)(nil),     // 36: iam.v1.GetBindingResponse
+	(*CreatePolicyRequest)(nil),    // 37: iam.v1.CreatePolicyRequest
+	(*CreatePolicyResponse)(nil),   // 38: iam.v1.CreatePolicyResponse
+	(*DeletePolicyRequest)(nil),    // 39: iam.v1.DeletePolicyRequest
+	(*DeletePolicyResponse)(nil),   // 40: iam.v1.DeletePolicyResponse
+	(*CanDoRequest)(nil),           // 41: iam.v1.CanDoRequest
+	(*CanDoResponse)(nil),          // 42: iam.v1.CanDoResponse
+	(*durationpb.Duration)(nil),    // 43: google.protobuf.Duration
+	(*wrapperspb.StringValue)(nil), // 44: google.protobuf.StringValue
+	(common.OperationResult)(0),    // 45: common.OperationResult
 }
 var file_iam_v1_message_proto_depIdxs = []int32{
-	42, // 0: iam.v1.LoginResponse.expiration:type_name -> google.protobuf.Duration
-	43, // 1: iam.v1.CreateUserRequest.phone:type_name -> google.protobuf.StringValue
-	43, // 2: iam.v1.CreateUserRequest.email:type_name -> google.protobuf.StringValue
-	43, // 3: iam.v1.CreateUserResponse.user_id:type_name -> google.protobuf.StringValue
-	44, // 4: iam.v1.CreateUserResponse.result:type_name -> common.OperationResult
-	43, // 5: iam.v1.CreateUserResponse.fail_reason:type_name -> google.protobuf.StringValue
+	43, // 0: iam.v1.LoginResponse.expiration:type_name -> google.protobuf.Duration
+	44, // 1: iam.v1.CreateUserRequest.phone:type_name -> google.protobuf.StringValue
+	44, // 2: iam.v1.CreateUserRequest.email:type_name -> google.protobuf.StringValue
+	44, // 3: iam.v1.CreateUserResponse.user_id:type_name -> google.protobuf.StringValue
+	45, // 4: iam.v1.CreateUserResponse.result:type_name -> common.OperationResult
+	44, // 5: iam.v1.CreateUserResponse.fail_reason:type_name -> google.protobuf.StringValue
 	6,  // [6:6] is the sub-list for method output_type
 	6,  // [6:6] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
@@ -2417,13 +2511,14 @@ func file_iam_v1_message_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_iam_v1_message_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   42,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_iam_v1_message_proto_goTypes,
 		DependencyIndexes: file_iam_v1_message_proto_depIdxs,
+		EnumInfos:         file_iam_v1_message_proto_enumTypes,
 		MessageInfos:      file_iam_v1_message_proto_msgTypes,
 	}.Build()
 	File_iam_v1_message_proto = out.File

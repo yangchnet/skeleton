@@ -9,6 +9,7 @@ package service
 import (
 	"context"
 	"github.com/yangchnet/skeleton/internal/iam/biz"
+	"github.com/yangchnet/skeleton/internal/iam/biz/ladon_manager"
 	"github.com/yangchnet/skeleton/internal/iam/conf"
 	"github.com/yangchnet/skeleton/internal/iam/data"
 )
@@ -21,8 +22,13 @@ func InitService(ctx context.Context, conf2 *conf.Bootstrap) (*service, error) {
 		return nil, err
 	}
 	cacheInterface := data.NewCache(ctx, conf2)
-	iamRepo := data.NewData(ctx, client, cacheInterface)
-	iamCase := biz.NewIamCase(ctx, iamRepo)
+	userRepo := data.NewUserRepo(ctx, client, cacheInterface)
+	roleRepo := data.NewRoleRepo(ctx, client, cacheInterface)
+	bindRepo := data.NewBindRepo(ctx, client, cacheInterface)
+	tenantRepo := data.NewTenantRepo(ctx, client, cacheInterface)
+	policyRepo := data.NewPolicyRepo(ctx, client, cacheInterface)
+	ladonManager := manager.NewManager(client)
+	iamCase := biz.NewIamCase(ctx, userRepo, roleRepo, bindRepo, tenantRepo, policyRepo, ladonManager)
 	serviceService := NewIamService(iamCase)
 	return serviceService, nil
 }

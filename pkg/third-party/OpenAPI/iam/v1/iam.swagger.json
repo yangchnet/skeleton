@@ -16,6 +16,44 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/cando": {
+      "get": {
+        "summary": "can do",
+        "description": "authz",
+        "operationId": "IamService_CanDo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CanDoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IamService"
+        ]
+      }
+    },
     "/api/v1/login": {
       "get": {
         "summary": "login",
@@ -123,6 +161,14 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1CanDoResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean"
         }
       }
     },

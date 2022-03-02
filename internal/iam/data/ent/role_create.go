@@ -10,8 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
+	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
 )
 
 // RoleCreate is the builder for creating a Role entity.
@@ -61,19 +61,19 @@ func (rc *RoleCreate) SetNillableUpdateTime(t *time.Time) *RoleCreate {
 	return rc
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (rc *RoleCreate) AddBindingIDs(ids ...int) *RoleCreate {
-	rc.mutation.AddBindingIDs(ids...)
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (rc *RoleCreate) AddUserIDs(ids ...int) *RoleCreate {
+	rc.mutation.AddUserIDs(ids...)
 	return rc
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (rc *RoleCreate) AddBindings(b ...*BindUserRole) *RoleCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddUsers adds the "users" edges to the User entity.
+func (rc *RoleCreate) AddUsers(u ...*User) *RoleCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return rc.AddBindingIDs(ids...)
+	return rc.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
@@ -233,17 +233,17 @@ func (rc *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 		})
 		_node.UpdateTime = &value
 	}
-	if nodes := rc.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := rc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   role.BindingsTable,
-			Columns: []string{role.BindingsColumn},
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}

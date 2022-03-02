@@ -40,43 +40,6 @@ var (
 			},
 		},
 	}
-	// BindUserRolesColumns holds the columns for the "bind_user_roles" table.
-	BindUserRolesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "username", Type: field.TypeString},
-		{Name: "rolename", Type: field.TypeString},
-		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime, Nullable: true},
-		{Name: "role_bindings", Type: field.TypeInt, Nullable: true},
-		{Name: "user_bindings", Type: field.TypeInt, Nullable: true},
-	}
-	// BindUserRolesTable holds the schema information for the "bind_user_roles" table.
-	BindUserRolesTable = &schema.Table{
-		Name:       "bind_user_roles",
-		Columns:    BindUserRolesColumns,
-		PrimaryKey: []*schema.Column{BindUserRolesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "bind_user_roles_roles_bindings",
-				Columns:    []*schema.Column{BindUserRolesColumns[5]},
-				RefColumns: []*schema.Column{RolesColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "bind_user_roles_users_bindings",
-				Columns:    []*schema.Column{BindUserRolesColumns[6]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "binduserrole_username_rolename",
-				Unique:  false,
-				Columns: []*schema.Column{BindUserRolesColumns[1], BindUserRolesColumns[2]},
-			},
-		},
-	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -153,19 +116,44 @@ var (
 			},
 		},
 	}
+	// UserRolesColumns holds the columns for the "user_roles" table.
+	UserRolesColumns = []*schema.Column{
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "role_id", Type: field.TypeInt},
+	}
+	// UserRolesTable holds the schema information for the "user_roles" table.
+	UserRolesTable = &schema.Table{
+		Name:       "user_roles",
+		Columns:    UserRolesColumns,
+		PrimaryKey: []*schema.Column{UserRolesColumns[0], UserRolesColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_roles_user_id",
+				Columns:    []*schema.Column{UserRolesColumns[0]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "user_roles_role_id",
+				Columns:    []*schema.Column{UserRolesColumns[1]},
+				RefColumns: []*schema.Column{RolesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AuthzPoliciesTable,
-		BindUserRolesTable,
 		RolesTable,
 		TenantsTable,
 		UsersTable,
+		UserRolesTable,
 	}
 )
 
 func init() {
 	AuthzPoliciesTable.ForeignKeys[0].RefTable = UsersTable
-	BindUserRolesTable.ForeignKeys[0].RefTable = RolesTable
-	BindUserRolesTable.ForeignKeys[1].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = TenantsTable
+	UserRolesTable.ForeignKeys[0].RefTable = UsersTable
+	UserRolesTable.ForeignKeys[1].RefTable = RolesTable
 }

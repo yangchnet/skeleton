@@ -29,8 +29,8 @@ const (
 	FieldUpdateTime = "update_time"
 	// EdgePolicys holds the string denoting the policys edge name in mutations.
 	EdgePolicys = "policys"
-	// EdgeBindings holds the string denoting the bindings edge name in mutations.
-	EdgeBindings = "bindings"
+	// EdgeRoles holds the string denoting the roles edge name in mutations.
+	EdgeRoles = "roles"
 	// EdgeBelong holds the string denoting the belong edge name in mutations.
 	EdgeBelong = "belong"
 	// Table holds the table name of the user in the database.
@@ -42,13 +42,11 @@ const (
 	PolicysInverseTable = "authz_policies"
 	// PolicysColumn is the table column denoting the policys relation/edge.
 	PolicysColumn = "user_policys"
-	// BindingsTable is the table that holds the bindings relation/edge.
-	BindingsTable = "bind_user_roles"
-	// BindingsInverseTable is the table name for the BindUserRole entity.
-	// It exists in this package in order to avoid circular dependency with the "binduserrole" package.
-	BindingsInverseTable = "bind_user_roles"
-	// BindingsColumn is the table column denoting the bindings relation/edge.
-	BindingsColumn = "user_bindings"
+	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
+	RolesTable = "user_roles"
+	// RolesInverseTable is the table name for the Role entity.
+	// It exists in this package in order to avoid circular dependency with the "role" package.
+	RolesInverseTable = "roles"
 	// BelongTable is the table that holds the belong relation/edge.
 	BelongTable = "users"
 	// BelongInverseTable is the table name for the Tenant entity.
@@ -76,6 +74,12 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"tenant_users",
 }
+
+var (
+	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
+	// primary key for the roles relation (M2M).
+	RolesPrimaryKey = []string{"user_id", "role_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

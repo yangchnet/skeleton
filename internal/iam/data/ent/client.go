@@ -10,7 +10,6 @@ import (
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/migrate"
 
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
@@ -27,8 +26,6 @@ type Client struct {
 	Schema *migrate.Schema
 	// AuthzPolicy is the client for interacting with the AuthzPolicy builders.
 	AuthzPolicy *AuthzPolicyClient
-	// BindUserRole is the client for interacting with the BindUserRole builders.
-	BindUserRole *BindUserRoleClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// Tenant is the client for interacting with the Tenant builders.
@@ -49,7 +46,6 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.AuthzPolicy = NewAuthzPolicyClient(c.config)
-	c.BindUserRole = NewBindUserRoleClient(c.config)
 	c.Role = NewRoleClient(c.config)
 	c.Tenant = NewTenantClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -84,13 +80,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AuthzPolicy:  NewAuthzPolicyClient(cfg),
-		BindUserRole: NewBindUserRoleClient(cfg),
-		Role:         NewRoleClient(cfg),
-		Tenant:       NewTenantClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		AuthzPolicy: NewAuthzPolicyClient(cfg),
+		Role:        NewRoleClient(cfg),
+		Tenant:      NewTenantClient(cfg),
+		User:        NewUserClient(cfg),
 	}, nil
 }
 
@@ -108,13 +103,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AuthzPolicy:  NewAuthzPolicyClient(cfg),
-		BindUserRole: NewBindUserRoleClient(cfg),
-		Role:         NewRoleClient(cfg),
-		Tenant:       NewTenantClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		AuthzPolicy: NewAuthzPolicyClient(cfg),
+		Role:        NewRoleClient(cfg),
+		Tenant:      NewTenantClient(cfg),
+		User:        NewUserClient(cfg),
 	}, nil
 }
 
@@ -145,7 +139,6 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.AuthzPolicy.Use(hooks...)
-	c.BindUserRole.Use(hooks...)
 	c.Role.Use(hooks...)
 	c.Tenant.Use(hooks...)
 	c.User.Use(hooks...)
@@ -257,128 +250,6 @@ func (c *AuthzPolicyClient) Hooks() []Hook {
 	return c.hooks.AuthzPolicy
 }
 
-// BindUserRoleClient is a client for the BindUserRole schema.
-type BindUserRoleClient struct {
-	config
-}
-
-// NewBindUserRoleClient returns a client for the BindUserRole from the given config.
-func NewBindUserRoleClient(c config) *BindUserRoleClient {
-	return &BindUserRoleClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `binduserrole.Hooks(f(g(h())))`.
-func (c *BindUserRoleClient) Use(hooks ...Hook) {
-	c.hooks.BindUserRole = append(c.hooks.BindUserRole, hooks...)
-}
-
-// Create returns a create builder for BindUserRole.
-func (c *BindUserRoleClient) Create() *BindUserRoleCreate {
-	mutation := newBindUserRoleMutation(c.config, OpCreate)
-	return &BindUserRoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of BindUserRole entities.
-func (c *BindUserRoleClient) CreateBulk(builders ...*BindUserRoleCreate) *BindUserRoleCreateBulk {
-	return &BindUserRoleCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for BindUserRole.
-func (c *BindUserRoleClient) Update() *BindUserRoleUpdate {
-	mutation := newBindUserRoleMutation(c.config, OpUpdate)
-	return &BindUserRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *BindUserRoleClient) UpdateOne(bur *BindUserRole) *BindUserRoleUpdateOne {
-	mutation := newBindUserRoleMutation(c.config, OpUpdateOne, withBindUserRole(bur))
-	return &BindUserRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *BindUserRoleClient) UpdateOneID(id int) *BindUserRoleUpdateOne {
-	mutation := newBindUserRoleMutation(c.config, OpUpdateOne, withBindUserRoleID(id))
-	return &BindUserRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for BindUserRole.
-func (c *BindUserRoleClient) Delete() *BindUserRoleDelete {
-	mutation := newBindUserRoleMutation(c.config, OpDelete)
-	return &BindUserRoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *BindUserRoleClient) DeleteOne(bur *BindUserRole) *BindUserRoleDeleteOne {
-	return c.DeleteOneID(bur.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *BindUserRoleClient) DeleteOneID(id int) *BindUserRoleDeleteOne {
-	builder := c.Delete().Where(binduserrole.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &BindUserRoleDeleteOne{builder}
-}
-
-// Query returns a query builder for BindUserRole.
-func (c *BindUserRoleClient) Query() *BindUserRoleQuery {
-	return &BindUserRoleQuery{
-		config: c.config,
-	}
-}
-
-// Get returns a BindUserRole entity by its id.
-func (c *BindUserRoleClient) Get(ctx context.Context, id int) (*BindUserRole, error) {
-	return c.Query().Where(binduserrole.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *BindUserRoleClient) GetX(ctx context.Context, id int) *BindUserRole {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryUser queries the user edge of a BindUserRole.
-func (c *BindUserRoleClient) QueryUser(bur *BindUserRole) *UserQuery {
-	query := &UserQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := bur.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(binduserrole.Table, binduserrole.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, binduserrole.UserTable, binduserrole.UserColumn),
-		)
-		fromV = sqlgraph.Neighbors(bur.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryRole queries the role edge of a BindUserRole.
-func (c *BindUserRoleClient) QueryRole(bur *BindUserRole) *RoleQuery {
-	query := &RoleQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := bur.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(binduserrole.Table, binduserrole.FieldID, id),
-			sqlgraph.To(role.Table, role.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, binduserrole.RoleTable, binduserrole.RoleColumn),
-		)
-		fromV = sqlgraph.Neighbors(bur.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *BindUserRoleClient) Hooks() []Hook {
-	return c.hooks.BindUserRole
-}
-
 // RoleClient is a client for the Role schema.
 type RoleClient struct {
 	config
@@ -464,15 +335,15 @@ func (c *RoleClient) GetX(ctx context.Context, id int) *Role {
 	return obj
 }
 
-// QueryBindings queries the bindings edge of a Role.
-func (c *RoleClient) QueryBindings(r *Role) *BindUserRoleQuery {
-	query := &BindUserRoleQuery{config: c.config}
+// QueryUsers queries the users edge of a Role.
+func (c *RoleClient) QueryUsers(r *Role) *UserQuery {
+	query := &UserQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := r.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(role.Table, role.FieldID, id),
-			sqlgraph.To(binduserrole.Table, binduserrole.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, role.BindingsTable, role.BindingsColumn),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, role.UsersTable, role.UsersPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
 		return fromV, nil
@@ -692,15 +563,15 @@ func (c *UserClient) QueryPolicys(u *User) *AuthzPolicyQuery {
 	return query
 }
 
-// QueryBindings queries the bindings edge of a User.
-func (c *UserClient) QueryBindings(u *User) *BindUserRoleQuery {
-	query := &BindUserRoleQuery{config: c.config}
+// QueryRoles queries the roles edge of a User.
+func (c *UserClient) QueryRoles(u *User) *RoleQuery {
+	query := &RoleQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(binduserrole.Table, binduserrole.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.BindingsTable, user.BindingsColumn),
+			sqlgraph.To(role.Table, role.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, user.RolesTable, user.RolesPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

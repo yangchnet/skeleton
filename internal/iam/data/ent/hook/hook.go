@@ -22,19 +22,6 @@ func (f AuthzPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return f(ctx, mv)
 }
 
-// The BindUserRoleFunc type is an adapter to allow the use of ordinary
-// function as BindUserRole mutator.
-type BindUserRoleFunc func(context.Context, *ent.BindUserRoleMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f BindUserRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.BindUserRoleMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BindUserRoleMutation", m)
-	}
-	return f(ctx, mv)
-}
-
 // The RoleFunc type is an adapter to allow the use of ordinary
 // function as Role mutator.
 type RoleFunc func(context.Context, *ent.RoleMutation) (ent.Value, error)

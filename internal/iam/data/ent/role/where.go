@@ -509,25 +509,25 @@ func UpdateTimeNotNil() predicate.Role {
 	})
 }
 
-// HasBindings applies the HasEdge predicate on the "bindings" edge.
-func HasBindings() predicate.Role {
+// HasUsers applies the HasEdge predicate on the "users" edge.
+func HasUsers() predicate.Role {
 	return predicate.Role(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindingsTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindingsTable, BindingsColumn),
+			sqlgraph.To(UsersTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, UsersTable, UsersPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasBindingsWith applies the HasEdge predicate on the "bindings" edge with a given conditions (other predicates).
-func HasBindingsWith(preds ...predicate.BindUserRole) predicate.Role {
+// HasUsersWith applies the HasEdge predicate on the "users" edge with a given conditions (other predicates).
+func HasUsersWith(preds ...predicate.User) predicate.Role {
 	return predicate.Role(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindingsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindingsTable, BindingsColumn),
+			sqlgraph.To(UsersInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, UsersTable, UsersPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

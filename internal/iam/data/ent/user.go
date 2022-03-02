@@ -44,8 +44,8 @@ type User struct {
 type UserEdges struct {
 	// Policys holds the value of the policys edge.
 	Policys []*AuthzPolicy `json:"policys,omitempty"`
-	// Bindings holds the value of the bindings edge.
-	Bindings []*BindUserRole `json:"bindings,omitempty"`
+	// Roles holds the value of the roles edge.
+	Roles []*Role `json:"roles,omitempty"`
 	// Belong holds the value of the belong edge.
 	Belong *Tenant `json:"belong,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -62,13 +62,13 @@ func (e UserEdges) PolicysOrErr() ([]*AuthzPolicy, error) {
 	return nil, &NotLoadedError{edge: "policys"}
 }
 
-// BindingsOrErr returns the Bindings value or an error if the edge
+// RolesOrErr returns the Roles value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) BindingsOrErr() ([]*BindUserRole, error) {
+func (e UserEdges) RolesOrErr() ([]*Role, error) {
 	if e.loadedTypes[1] {
-		return e.Bindings, nil
+		return e.Roles, nil
 	}
-	return nil, &NotLoadedError{edge: "bindings"}
+	return nil, &NotLoadedError{edge: "roles"}
 }
 
 // BelongOrErr returns the Belong value or an error if the edge
@@ -188,9 +188,9 @@ func (u *User) QueryPolicys() *AuthzPolicyQuery {
 	return (&UserClient{config: u.config}).QueryPolicys(u)
 }
 
-// QueryBindings queries the "bindings" edge of the User entity.
-func (u *User) QueryBindings() *BindUserRoleQuery {
-	return (&UserClient{config: u.config}).QueryBindings(u)
+// QueryRoles queries the "roles" edge of the User entity.
+func (u *User) QueryRoles() *RoleQuery {
+	return (&UserClient{config: u.config}).QueryRoles(u)
 }
 
 // QueryBelong queries the "belong" edge of the User entity.

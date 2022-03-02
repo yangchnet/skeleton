@@ -32,20 +32,20 @@ type Role struct {
 
 // RoleEdges holds the relations/edges for other nodes in the graph.
 type RoleEdges struct {
-	// Bindings holds the value of the bindings edge.
-	Bindings []*BindUserRole `json:"bindings,omitempty"`
+	// Users holds the value of the users edge.
+	Users []*User `json:"users,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// BindingsOrErr returns the Bindings value or an error if the edge
+// UsersOrErr returns the Users value or an error if the edge
 // was not loaded in eager-loading.
-func (e RoleEdges) BindingsOrErr() ([]*BindUserRole, error) {
+func (e RoleEdges) UsersOrErr() ([]*User, error) {
 	if e.loadedTypes[0] {
-		return e.Bindings, nil
+		return e.Users, nil
 	}
-	return nil, &NotLoadedError{edge: "bindings"}
+	return nil, &NotLoadedError{edge: "users"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -110,9 +110,9 @@ func (r *Role) assignValues(columns []string, values []interface{}) error {
 	return nil
 }
 
-// QueryBindings queries the "bindings" edge of the Role entity.
-func (r *Role) QueryBindings() *BindUserRoleQuery {
-	return (&RoleClient{config: r.config}).QueryBindings(r)
+// QueryUsers queries the "users" edge of the Role entity.
+func (r *Role) QueryUsers() *UserQuery {
+	return (&RoleClient{config: r.config}).QueryUsers(r)
 }
 
 // Update returns a builder for updating this Role.

@@ -62,5 +62,14 @@ service IamService {
   // rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {};
   // ====================================================================
   // CanDo
-  // rpc CanDo(CanDoRequest) returns (CanDoResponse) {};
+  rpc CanDo(CanDoRequest) returns (CanDoResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary : "can do"
+      description : "authz"
+      // security : {}
+    };
+    option (google.api.http) = {
+      get : "/api/v1/cando"
+    };
+  };
 }

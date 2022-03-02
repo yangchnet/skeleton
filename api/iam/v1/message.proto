@@ -8,6 +8,7 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/duration.proto";
 import "common/enum.proto";
 
+// ====================================================================
 // Token
 message LoginRequest {
   string username = 1;
@@ -56,6 +57,7 @@ message GetUserRequest {}
 
 message GetUserResponse {}
 
+// ====================================================================
 // Role Manage
 message CreateRoleRequest {}
 
@@ -73,6 +75,7 @@ message DeleteRoleRequest {}
 
 message DeleteRoleResponse {}
 
+// ====================================================================
 // Tenant Manage
 message CreateTenantRequest {}
 
@@ -90,6 +93,7 @@ message GetTenantRequest {}
 
 message GetTenantResponse {}
 
+// ====================================================================
 // Binding Manage
 message CreateBindingRequest {}
 
@@ -107,6 +111,7 @@ message GetBindingRequest {}
 
 message GetBindingResponse {}
 
+// ====================================================================
 // Policy Manage
 message CreatePolicyRequest {}
 
@@ -116,7 +121,17 @@ message DeletePolicyRequest {}
 
 message DeletePolicyResponse {}
 
+// ====================================================================
 // CanDo
-message CanDoRequest {}
+message CanDoRequest {
+  string resource = 1;
+  string action = 2;
+  enum Action {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+    READ = 3;
+  }
+}
 
-message CanDoResponse {}
+message CanDoResponse { bool allowed = 1; }

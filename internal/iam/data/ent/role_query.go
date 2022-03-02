@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/predicate"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
+	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
 )
 
 // RoleQuery is the builder for querying Role entities.
@@ -27,7 +27,7 @@ type RoleQuery struct {
 	fields     []string
 	predicates []predicate.Role
 	// eager-loading edges.
-	withBindings *BindUserRoleQuery
+	withUsers *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -64,9 +64,9 @@ func (rq *RoleQuery) Order(o ...OrderFunc) *RoleQuery {
 	return rq
 }
 
-// QueryBindings chains the current query on the "bindings" edge.
-func (rq *RoleQuery) QueryBindings() *BindUserRoleQuery {
-	query := &BindUserRoleQuery{config: rq.config}
+// QueryUsers chains the current query on the "users" edge.
+func (rq *RoleQuery) QueryUsers() *UserQuery {
+	query := &UserQuery{config: rq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := rq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -77,8 +77,8 @@ func (rq *RoleQuery) QueryBindings() *BindUserRoleQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(role.Table, role.FieldID, selector),
-			sqlgraph.To(binduserrole.Table, binduserrole.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, role.BindingsTable, role.BindingsColumn),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, role.UsersTable, role.UsersPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -262,26 +262,26 @@ func (rq *RoleQuery) Clone() *RoleQuery {
 		return nil
 	}
 	return &RoleQuery{
-		config:       rq.config,
-		limit:        rq.limit,
-		offset:       rq.offset,
-		order:        append([]OrderFunc{}, rq.order...),
-		predicates:   append([]predicate.Role{}, rq.predicates...),
-		withBindings: rq.withBindings.Clone(),
+		config:     rq.config,
+		limit:      rq.limit,
+		offset:     rq.offset,
+		order:      append([]OrderFunc{}, rq.order...),
+		predicates: append([]predicate.Role{}, rq.predicates...),
+		withUsers:  rq.withUsers.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
 	}
 }
 
-// WithBindings tells the query-builder to eager-load the nodes that are connected to
-// the "bindings" edge. The optional arguments are used to configure the query builder of the edge.
-func (rq *RoleQuery) WithBindings(opts ...func(*BindUserRoleQuery)) *RoleQuery {
-	query := &BindUserRoleQuery{config: rq.config}
+// WithUsers tells the query-builder to eager-load the nodes that are connected to
+// the "users" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RoleQuery) WithUsers(opts ...func(*UserQuery)) *RoleQuery {
+	query := &UserQuery{config: rq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	rq.withBindings = query
+	rq.withUsers = query
 	return rq
 }
 
@@ -351,7 +351,7 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 		nodes       = []*Role{}
 		_spec       = rq.querySpec()
 		loadedTypes = [1]bool{
-			rq.withBindings != nil,
+			rq.withUsers != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
@@ -374,32 +374,68 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 		return nodes, nil
 	}
 
-	if query := rq.withBindings; query != nil {
+	if query := rq.withUsers; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*Role)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Bindings = []*BindUserRole{}
+		ids := make(map[int]*Role, len(nodes))
+		for _, node := range nodes {
+			ids[node.ID] = node
+			fks = append(fks, node.ID)
+			node.Edges.Users = []*User{}
 		}
-		query.withFKs = true
-		query.Where(predicate.BindUserRole(func(s *sql.Selector) {
-			s.Where(sql.InValues(role.BindingsColumn, fks...))
-		}))
+		var (
+			edgeids []int
+			edges   = make(map[int][]*Role)
+		)
+		_spec := &sqlgraph.EdgeQuerySpec{
+			Edge: &sqlgraph.EdgeSpec{
+				Inverse: true,
+				Table:   role.UsersTable,
+				Columns: role.UsersPrimaryKey,
+			},
+			Predicate: func(s *sql.Selector) {
+				s.Where(sql.InValues(role.UsersPrimaryKey[1], fks...))
+			},
+			ScanValues: func() [2]interface{} {
+				return [2]interface{}{new(sql.NullInt64), new(sql.NullInt64)}
+			},
+			Assign: func(out, in interface{}) error {
+				eout, ok := out.(*sql.NullInt64)
+				if !ok || eout == nil {
+					return fmt.Errorf("unexpected id value for edge-out")
+				}
+				ein, ok := in.(*sql.NullInt64)
+				if !ok || ein == nil {
+					return fmt.Errorf("unexpected id value for edge-in")
+				}
+				outValue := int(eout.Int64)
+				inValue := int(ein.Int64)
+				node, ok := ids[outValue]
+				if !ok {
+					return fmt.Errorf("unexpected node id in edges: %v", outValue)
+				}
+				if _, ok := edges[inValue]; !ok {
+					edgeids = append(edgeids, inValue)
+				}
+				edges[inValue] = append(edges[inValue], node)
+				return nil
+			},
+		}
+		if err := sqlgraph.QueryEdges(ctx, rq.driver, _spec); err != nil {
+			return nil, fmt.Errorf(`query edges "users": %w`, err)
+		}
+		query.Where(user.IDIn(edgeids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.role_bindings
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "role_bindings" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			nodes, ok := edges[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "role_bindings" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected "users" node returned %v`, n.ID)
 			}
-			node.Edges.Bindings = append(node.Edges.Bindings, n)
+			for i := range nodes {
+				nodes[i].Edges.Users = append(nodes[i].Edges.Users, n)
+			}
 		}
 	}
 

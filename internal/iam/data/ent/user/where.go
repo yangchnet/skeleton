@@ -1051,25 +1051,25 @@ func HasPolicysWith(preds ...predicate.AuthzPolicy) predicate.User {
 	})
 }
 
-// HasBindings applies the HasEdge predicate on the "bindings" edge.
-func HasBindings() predicate.User {
+// HasRoles applies the HasEdge predicate on the "roles" edge.
+func HasRoles() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindingsTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindingsTable, BindingsColumn),
+			sqlgraph.To(RolesTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasBindingsWith applies the HasEdge predicate on the "bindings" edge with a given conditions (other predicates).
-func HasBindingsWith(preds ...predicate.BindUserRole) predicate.User {
+// HasRolesWith applies the HasEdge predicate on the "roles" edge with a given conditions (other predicates).
+func HasRolesWith(preds ...predicate.Role) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindingsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindingsTable, BindingsColumn),
+			sqlgraph.To(RolesInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

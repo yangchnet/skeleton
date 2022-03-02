@@ -44,8 +44,7 @@ func (User) Indexes() []ent.Index {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("policys", AuthzPolicy.Type),
-		edge.To("bindings", BindUserRole.Type),
-
+		edge.To("roles", Role.Type),
 		edge.From("belong", Tenant.Type).Ref("users").Unique(),
 	}
 }

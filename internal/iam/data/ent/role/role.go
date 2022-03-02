@@ -19,17 +19,15 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
 	FieldUpdateTime = "update_time"
-	// EdgeBindings holds the string denoting the bindings edge name in mutations.
-	EdgeBindings = "bindings"
+	// EdgeUsers holds the string denoting the users edge name in mutations.
+	EdgeUsers = "users"
 	// Table holds the table name of the role in the database.
 	Table = "roles"
-	// BindingsTable is the table that holds the bindings relation/edge.
-	BindingsTable = "bind_user_roles"
-	// BindingsInverseTable is the table name for the BindUserRole entity.
-	// It exists in this package in order to avoid circular dependency with the "binduserrole" package.
-	BindingsInverseTable = "bind_user_roles"
-	// BindingsColumn is the table column denoting the bindings relation/edge.
-	BindingsColumn = "role_bindings"
+	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
+	UsersTable = "user_roles"
+	// UsersInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UsersInverseTable = "users"
 )
 
 // Columns holds all SQL columns for role fields.
@@ -40,6 +38,12 @@ var Columns = []string{
 	FieldCreateTime,
 	FieldUpdateTime,
 }
+
+var (
+	// UsersPrimaryKey and UsersColumn2 are the table columns denoting the
+	// primary key for the users relation (M2M).
+	UsersPrimaryKey = []string{"user_id", "role_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

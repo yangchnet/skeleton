@@ -52,6 +52,10 @@ type IamServiceClient interface {
 	// ====================================================================
 	// Policy Manage
 	CreatePolicy(ctx context.Context, in *CreatePolicyRequest, opts ...grpc.CallOption) (*CreatePolicyResponse, error)
+	// rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {};
+	// ====================================================================
+	// CanDo
+	CanDo(ctx context.Context, in *CanDoRequest, opts ...grpc.CallOption) (*CanDoResponse, error)
 }
 
 type iamServiceClient struct {
@@ -116,6 +120,15 @@ func (c *iamServiceClient) CreatePolicy(ctx context.Context, in *CreatePolicyReq
 	return out, nil
 }
 
+func (c *iamServiceClient) CanDo(ctx context.Context, in *CanDoRequest, opts ...grpc.CallOption) (*CanDoResponse, error) {
+	out := new(CanDoResponse)
+	err := c.cc.Invoke(ctx, "/iam.v1.IamService/CanDo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IamServiceServer is the server API for IamService service.
 // All implementations must embed UnimplementedIamServiceServer
 // for forward compatibility
@@ -150,6 +163,10 @@ type IamServiceServer interface {
 	// ====================================================================
 	// Policy Manage
 	CreatePolicy(context.Context, *CreatePolicyRequest) (*CreatePolicyResponse, error)
+	// rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse) {};
+	// ====================================================================
+	// CanDo
+	CanDo(context.Context, *CanDoRequest) (*CanDoResponse, error)
 	mustEmbedUnimplementedIamServiceServer()
 }
 
@@ -174,6 +191,9 @@ func (UnimplementedIamServiceServer) CreateBinding(context.Context, *CreateBindi
 }
 func (UnimplementedIamServiceServer) CreatePolicy(context.Context, *CreatePolicyRequest) (*CreatePolicyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePolicy not implemented")
+}
+func (UnimplementedIamServiceServer) CanDo(context.Context, *CanDoRequest) (*CanDoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CanDo not implemented")
 }
 func (UnimplementedIamServiceServer) mustEmbedUnimplementedIamServiceServer() {}
 
@@ -296,6 +316,24 @@ func _IamService_CreatePolicy_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IamService_CanDo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CanDoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IamServiceServer).CanDo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/iam.v1.IamService/CanDo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IamServiceServer).CanDo(ctx, req.(*CanDoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IamService_ServiceDesc is the grpc.ServiceDesc for IamService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -326,6 +364,10 @@ var IamService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePolicy",
 			Handler:    _IamService_CreatePolicy_Handler,
+		},
+		{
+			MethodName: "CanDo",
+			Handler:    _IamService_CanDo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

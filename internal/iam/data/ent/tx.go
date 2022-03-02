@@ -14,8 +14,6 @@ type Tx struct {
 	config
 	// AuthzPolicy is the client for interacting with the AuthzPolicy builders.
 	AuthzPolicy *AuthzPolicyClient
-	// BindUserRole is the client for interacting with the BindUserRole builders.
-	BindUserRole *BindUserRoleClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// Tenant is the client for interacting with the Tenant builders.
@@ -158,7 +156,6 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.AuthzPolicy = NewAuthzPolicyClient(tx.config)
-	tx.BindUserRole = NewBindUserRoleClient(tx.config)
 	tx.Role = NewRoleClient(tx.config)
 	tx.Tenant = NewTenantClient(tx.config)
 	tx.User = NewUserClient(tx.config)

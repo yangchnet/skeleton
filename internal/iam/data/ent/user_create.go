@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/authzpolicy"
-	"github.com/yangchnet/skeleton/internal/iam/data/ent/binduserrole"
+	"github.com/yangchnet/skeleton/internal/iam/data/ent/role"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/tenant"
 	"github.com/yangchnet/skeleton/internal/iam/data/ent/user"
 )
@@ -126,19 +126,19 @@ func (uc *UserCreate) AddPolicys(a ...*AuthzPolicy) *UserCreate {
 	return uc.AddPolicyIDs(ids...)
 }
 
-// AddBindingIDs adds the "bindings" edge to the BindUserRole entity by IDs.
-func (uc *UserCreate) AddBindingIDs(ids ...int) *UserCreate {
-	uc.mutation.AddBindingIDs(ids...)
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (uc *UserCreate) AddRoleIDs(ids ...int) *UserCreate {
+	uc.mutation.AddRoleIDs(ids...)
 	return uc
 }
 
-// AddBindings adds the "bindings" edges to the BindUserRole entity.
-func (uc *UserCreate) AddBindings(b ...*BindUserRole) *UserCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uc *UserCreate) AddRoles(r ...*Role) *UserCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uc.AddBindingIDs(ids...)
+	return uc.AddRoleIDs(ids...)
 }
 
 // SetBelongID sets the "belong" edge to the Tenant entity by ID.
@@ -386,17 +386,17 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.BindingsIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.BindingsTable,
-			Columns: []string{user.BindingsColumn},
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: binduserrole.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}

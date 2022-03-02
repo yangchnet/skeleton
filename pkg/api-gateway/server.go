@@ -5,6 +5,9 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
+	v1 "github.com/yangchnet/skeleton/api/iam/v1"
+	"github.com/yangchnet/skeleton/pkg/token"
 )
 
 const (
@@ -13,10 +16,22 @@ const (
 	xForwardedFor = "X-Forwarded-For"
 )
 
-type Server struct{}
+var ProviderSet = wire.NewSet(NewServer)
 
-func Serve(ctx context.Context) {
-	s, _ := InitService(ctx)
+// Server is a openapi server.
+type Server struct {
+	iamClient  v1.IamServiceClient
+	tokenMaker token.Maker
+}
+
+// NewServer creates a new Server for openapi.
+func NewServer(iamClient v1.IamServiceClient, tokenMaker token.Maker) *Server {
+	return &Server{iamClient: iamClient, tokenMaker: tokenMaker}
+}
+
+// Serve start openapi server.
+func Serve(ctx context.Context, secretKey string) {
+	s, _ := InitService(ctx, secretKey)
 
 	if err := s.run(ctx); err != nil {
 		log.Fatal(err)

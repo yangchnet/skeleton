@@ -8,5 +8,5 @@ import (
 
 func main() {
 	ctx := context.Background()
-	apigateway.Serve(ctx)
+	apigateway.Serve(ctx, "326c9f73b0f45705a73eb020a32d790a") // FIXME: secretKey
 }

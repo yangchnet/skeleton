@@ -7,12 +7,14 @@ import (
 	"context"
 
 	"github.com/google/wire"
-	"github.com/gin-gonic/gin"
+	iamClient "github.com/yangchnet/skeleton/pkg/client/iam"
+	"github.com/yangchnet/skeleton/pkg/token"
 )
 
-func InitService(context.Context) (Server, error) {
+func InitService(ctx context.Context, secretKey string) (*Server, error) {
 	panic(wire.Build(
-		gin.New(),
-		wire.Struct(new(Server), "*"),
+		iamClient.ProviderSet,
+		token.ProviderSet,
+		ProviderSet,
 	))
 }

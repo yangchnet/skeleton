@@ -6,20 +6,20 @@ import (
 
 // Payload is Jwt payload.
 type Payload struct {
-	UserID    string    `json:"user_id"`
+	Username  string    `json:"username"`
 	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
 // NewPayload create a new token payload.
-func NewPayload(userID string, duration time.Duration) (*Payload, error) {
+func NewPayload(username string, duration time.Duration) (*Payload, error) {
 	// tokenID, err := uuid.NewRandom()
 	// if err != nil {
 	// 	return nil, err
 	// }
 
 	return &Payload{
-		UserID:    userID,
+		Username:  username,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(duration),
 	}, nil

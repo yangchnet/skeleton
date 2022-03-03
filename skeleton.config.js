@@ -13,5 +13,11 @@ module.exports = {
             cwd: CWD,
             watch: [CWD + "/internal/echo"],
         },
+        {
+            name: "iam-service",
+            script: "make run.iam-service",
+            cwd: CWD,
+            watch: [CWD + "/internal/iam"],
+        }
     ]
 }

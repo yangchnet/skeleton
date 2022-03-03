@@ -28,4 +28,4 @@ log:
   ignore_basic_fields: false # 日志中不记录时间、文件等信息
 token:
   secret: 326c9f73b0f45705a73eb020a32d790a
-  expiration: 7200 # seconds
+  expiration: 7200s # seconds

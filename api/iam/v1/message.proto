@@ -17,7 +17,7 @@ message TokenRequest {
 
 message TokenResponse {
   string token = 1;
-  google.protobuf.Duration expiration = 2;
+  // google.protobuf.Duration expiration = 2;
 }
 
 message RefreshTokenRequest {}
@@ -77,7 +77,7 @@ message DeleteRoleResponse {}
 
 // ====================================================================
 // Tenant Manage
-message CreateTenantRequest {}
+message CreateTenantRequest { string tenant_name = 1; }
 
 message CreateTenantResponse {}
 

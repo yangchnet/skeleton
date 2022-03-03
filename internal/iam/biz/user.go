@@ -2,7 +2,6 @@ package biz
 
 import (
 	"context"
-	"time"
 
 	"github.com/yangchnet/skeleton/pkg/logger"
 	"github.com/yangchnet/skeleton/tools/passwd"
@@ -14,15 +13,6 @@ type User struct {
 	Password string
 	Phone    string
 	Email    string
-}
-
-type Token struct {
-	Jwt        string
-	Expiration time.Duration
-}
-
-func (u *IamCase) Token(ctx context.Context, user *User) (*Token, error) {
-	panic("not implemented")
 }
 
 // CreateUser hashed password and create a new user.

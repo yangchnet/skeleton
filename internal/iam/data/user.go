@@ -64,3 +64,17 @@ func (r *Data) Roles(ctx context.Context, username string) ([]*biz.Role, error) 
 
 	return res, nil
 }
+
+func (r *Data) Passwd(ctx context.Context, username string) (string, error) {
+	u, err := r.db.User.Query().
+		Where(
+			user.Username(username),
+		).Only(ctx)
+	if err != nil {
+		logger.Error("get passwd failed. ", err)
+		if ent.IsNotFound(err) {
+			return "", biz.ErrNotFoundUser
+		}
+	}
+	return u.Passwd, nil
+}

@@ -227,9 +227,6 @@
       "properties": {
         "token": {
           "type": "string"
-        },
-        "expiration": {
-          "type": "string"
         }
       }
     }

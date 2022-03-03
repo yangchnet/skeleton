@@ -12,11 +12,12 @@ import (
 	"github.com/yangchnet/skeleton/internal/iam/biz/ladon_manager"
 	"github.com/yangchnet/skeleton/internal/iam/conf"
 	"github.com/yangchnet/skeleton/internal/iam/data"
+	"github.com/yangchnet/skeleton/pkg/token"
 )
 
 // Injectors from wire.go:
 
-func InitService(ctx context.Context, conf2 *conf.Bootstrap) (*service, error) {
+func InitService(ctx context.Context, conf2 *conf.Bootstrap, secretKey string) (*service, error) {
 	client, err := data.NewEnt(ctx, conf2)
 	if err != nil {
 		return nil, err
@@ -28,7 +29,11 @@ func InitService(ctx context.Context, conf2 *conf.Bootstrap) (*service, error) {
 	tenantRepo := data.NewTenantRepo(ctx, client, cacheInterface)
 	policyRepo := data.NewPolicyRepo(ctx, client, cacheInterface)
 	ladonManager := manager.NewManager(client)
-	iamCase := biz.NewIamCase(ctx, userRepo, roleRepo, bindRepo, tenantRepo, policyRepo, ladonManager)
+	maker, err := token.NewJWTMaker(secretKey)
+	if err != nil {
+		return nil, err
+	}
+	iamCase := biz.NewIamCase(ctx, userRepo, roleRepo, bindRepo, tenantRepo, policyRepo, ladonManager, maker)
 	serviceService := NewIamService(iamCase)
 	return serviceService, nil
 }

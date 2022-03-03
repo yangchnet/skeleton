@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ory/ladon"
+	"github.com/yangchnet/skeleton/pkg/token"
 )
 
 type IamRepo interface {
@@ -15,6 +16,7 @@ type IamRepo interface {
 type UserRepo interface {
 	CreateUser(ctx context.Context, user *User) (*User, error)
 	Roles(ctx context.Context, username string) ([]*Role, error)
+	Passwd(ctx context.Context, username string) (string, error)
 }
 
 type RoleRepo interface{}
@@ -32,6 +34,7 @@ type IamCase struct {
 	tenantRepo    TenantRepo
 	policyRepo    PolicyRepo
 	policyManager ladon.Manager
+	tokenMaker    token.Maker
 }
 
 func NewIamCase(
@@ -41,7 +44,8 @@ func NewIamCase(
 	bindRepo BindRepo,
 	tenantRepo TenantRepo,
 	policyRepo PolicyRepo,
-	manager ladon.Manager) *IamCase {
+	manager ladon.Manager,
+	tokenMaker token.Maker) *IamCase {
 	return &IamCase{
 		userRepo:      userRepo,
 		roleRepo:      roleRepo,
@@ -49,5 +53,6 @@ func NewIamCase(
 		tenantRepo:    tenantRepo,
 		policyRepo:    policyRepo,
 		policyManager: manager,
+		tokenMaker:    tokenMaker,
 	}
 }

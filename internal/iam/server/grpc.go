@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Serve start echo service.
+// GrpcServestart echo service.
 func GrpcServe(ctx context.Context, c *conf.Bootstrap) {
-	service, err := service.InitService(ctx, c)
+	service, err := service.InitService(ctx, c, c.Token.Secret)
 	if err != nil {
 		logger.Panicf("error initializing service: %v", err)
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/yangchnet/skeleton/pkg/logger"
 )
 
-var confLoc *string = flag.StringP("conf", "c", "configs/echo/config.yaml", "config file location")
+var confLoc *string = flag.StringP("conf", "c", "configs/api-gateway/configs.yaml", "config file location")
 
 func main() {
 	flag.Parse()
